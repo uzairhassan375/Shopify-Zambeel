@@ -1,0 +1,158 @@
+/* Dropshipping Pricing Widget - Isolated Styles */
+.dropshipping-pricing-widget {
+  margin: 20px 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.dropshipping-pricing-widget * {
+  box-sizing: border-box;
+}
+
+/* Tab Container */
+.dropshipping-pricing-widget .tab-container {
+  max-width: 400px;
+  margin: 0 auto 8px auto;
+}
+
+/* Tabs */
+.dropshipping-pricing-widget .tab-header {
+  display: flex;
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.dropshipping-pricing-widget .tab-btn {
+  flex: 1;
+  padding: 16px 20px;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+}
+
+.dropshipping-pricing-widget .tab-btn.active {
+  background: #ffffff;
+  color: #000;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Main Container */
+.dropshipping-pricing-widget .container {
+  max-width: 400px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+/* Content */
+.dropshipping-pricing-widget .tab-content {
+  padding: 24px;
+}
+
+/* Pricing card */
+.dropshipping-pricing-widget .pricing-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.dropshipping-pricing-widget .card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dropshipping-pricing-widget .delivery-icon {
+  width: 24px;
+  height: 24px;
+  background: #007bff;
+  border-radius: 4px;
+  margin-right: 12px;
+  position: relative;
+}
+
+.dropshipping-pricing-widget .delivery-icon::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 8px;
+  background: white;
+  border-radius: 2px;
+}
+
+.dropshipping-pricing-widget .delivery-icon::after {
+  content: '';
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 2px;
+  background: white;
+  border-radius: 1px;
+}
+
+.dropshipping-pricing-widget .card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+}
+
+.dropshipping-pricing-widget .price-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.dropshipping-pricing-widget .price-label {
+  font-size: 14px;
+  color: #888;
+  font-weight: 400;
+}
+
+.dropshipping-pricing-widget .price-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+}
+
+.dropshipping-pricing-widget .divider {
+  height: 1px;
+  background: #e0e0e0;
+  margin: 16px 0;
+}
+
+.dropshipping-pricing-widget .total-cost .price-value {
+  color: #007bff;
+  font-size: 20px;
+}
+
+/* Suggested selling price box */
+.dropshipping-pricing-widget .suggested-price-box {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 20px;
+}
+
+.dropshipping-pricing-widget .suggested-price-box .price-label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.dropshipping-pricing-widget .suggested-price-box .price-value {
+  font-size: 18px;
+  font-weight: 600;
+  display: block;
+}

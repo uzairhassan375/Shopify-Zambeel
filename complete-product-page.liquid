@@ -1,0 +1,1215 @@
+{% comment %}
+  Complete Product Page Template with Dynamic Metafields
+  Matches the design from the provided image
+{% endcomment %}
+
+<section id="MainProduct-{{ section.id }}" data-section="{{ section.id }}" data-product-handle="{{ product.handle }}">
+  {%- comment -%} CSS imports removed - all styles are inline {%- endcomment -%}
+
+  {%- assign current_variant = product.selected_or_first_available_variant -%}
+
+  <div class="dynamic-product-page">
+    <div class="full-viewport-breakout">
+      <!-- Product Images and Info Section - Full Width -->
+      <section class="full-width-sections">
+      <div class="full-width-container">
+        <div class="product-layout-flex">
+        <!-- Product Images -->
+        <div class="product-image-section">
+          <div class="product-image-gallery">
+            {% if product.media.size > 0 %}
+              <div class="main-image-container">
+                {% for media in product.media limit: 1 %}
+                  <img 
+                    src="{{ media.preview_image | image_url: width: 1920 }}" 
+                    alt="{{ media.alt | escape }}" 
+                    class="main-product-image"
+                    loading="eager"
+                    width="{{ media.preview_image.width }}"
+                    height="{{ media.preview_image.height }}">
+                {% endfor %}
+                <div class="image-counter">
+                  <span class="current-image">1</span>/<span class="total-images">{{ product.media.size }}</span>
+                </div>
+              </div>
+              
+              {% if product.media.size > 1 %}
+              <div class="thumbnail-gallery">
+                {% for media in product.media %}
+                  <div class="thumbnail-item {% if forloop.first %}active{% endif %}">
+                    <img 
+                      src="{{ media.preview_image | image_url: width: 300 }}" 
+                      alt="{{ media.alt | escape }}" 
+                      class="thumbnail-image"
+                      loading="lazy"
+                      width="{{ media.preview_image.width }}"
+                      height="{{ media.preview_image.height }}">
+                  </div>
+                {% endfor %}
+              </div>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Product Information -->
+        <div class="product-info-section">
+          <div class="product-info-container">
+            <!-- Breadcrumbs -->
+            <nav class="breadcrumbs">
+              <a href="/">Home</a> / 
+              <a href="/collections/all">Products</a> / 
+              <span>{{ product.title }}</span>
+            </nav>
+
+            <!-- Product Title -->
+            <h1 class="product-title">{{ product.title | escape }}</h1>
+            
+            <!-- Tagline -->
+            <p class="product-tagline">{{ product.metafields.custom.product_tagline | default: "Premium quality product" }}</p>
+            
+
+            <!-- Inventory Location -->
+            <div class="inventory-location">
+              <span class="location-icon">📍</span>
+              <span>Inventory Location: {{ product.metafields.custom.location | default: "UAE-Warehouse" }}</span>
+            </div>
+
+
+            <!-- Product Details Card -->
+            <div class="product-details-card">
+              <h3>Product Details</h3>
+              <div class="product-description-container">
+                <div class="product-description" id="product-description-{{ section.id }}">{{ product.metafields.custom.product_description | default: product.description }}</div>
+                <div class="read-more-wrapper" id="read-more-wrapper-{{ section.id }}" style="display: none;">
+                  <a href="#" class="read-more-link" id="read-more-link-{{ section.id }}">
+                    Read More <span class="arrow">↓</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- Full Width Sections After Image -->
+    <section class="full-width-sections">
+      <div class="full-width-container">
+
+        <!-- Main Tabs -->
+        <div class="main-tabs">
+          <button class="tab-btn active" data-tab="dropshipping">Dropshipping</button>
+          <button class="tab-btn" data-tab="wholesale">Wholesale</button>
+          <button class="tab-btn" data-tab="customisation">Customisation</button>
+        </div>
+
+        <!-- Dropshipping Information -->
+        <div class="dropshipping-info">
+          <div class="info-header">
+            <span class="info-icon">📦</span>
+            <h3>Dropshipping Information</h3>
+          </div>
+          
+          <div class="select-country">
+            <span class="country-label">Select Country:</span>
+            <div class="country-selection">
+              {% assign inventory_location = product.metafields.custom.location | default: "UAE-Warehouse" %}
+              {% if inventory_location contains "UAE" or inventory_location contains "uae" %}
+                <button class="country-select-btn active" data-country="uae">AE UAE</button>
+              {% endif %}
+              {% if inventory_location contains "KSA" or inventory_location contains "ksa" or inventory_location contains "Saudi" %}
+                <button class="country-select-btn {% unless inventory_location contains "UAE" or inventory_location contains "uae" %}active{% endunless %}" data-country="ksa">SA KSA</button>
+              {% endif %}
+              {% unless inventory_location contains "UAE" or inventory_location contains "uae" or inventory_location contains "KSA" or inventory_location contains "ksa" or inventory_location contains "Saudi" %}
+                <button class="country-select-btn active" data-country="uae">AE UAE</button>
+                <button class="country-select-btn" data-country="ksa">SA KSA</button>
+              {% endunless %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Market Insights Card -->
+        <div class="market-insights-card">
+          <div class="insights-header">
+            <span class="insights-icon"></span>
+            <h3>Market Insights for <span class="selected-country">UAE</span></h3>
+          </div>
+          
+          <div class="insights-grid">
+            <div class="insight-item">
+              <span class="insight-icon"></span>
+              <div class="insight-content">
+                <span class="insight-label">Market Saturation</span>
+                <span class="insight-value saturation-low">{{ product.metafields.custom.market_saturation | default: "Low" }}</span>
+              </div>
+            </div>
+            
+            <div class="insight-item">
+              <span class="insight-icon"></span>
+              <div class="insight-content">
+                <span class="insight-label">Delivery Success</span>
+                <span class="insight-value delivery-success">{{ product.metafields.custom.delivery_success_rate | default: "88% good" }}</span>
+              </div>
+            </div>
+            
+            <div class="insight-item">
+              <span class="insight-icon"></span>
+              <div class="insight-content">
+                <span class="insight-label">Dispatch Time</span>
+                <span class="insight-value dispatch-time" 
+                      data-dispatch-time-uae="{{ product.metafields.custom.dispatching_time | default: '1-2 days Processing' }}"
+                      data-dispatch-time-ksa="{{ product.metafields.custom.ksa_dispatching_time | default: '2-3 days Processing' }}">
+                  {{ product.metafields.custom.dispatching_time | default: "1-2 days Processing" }}
+                </span>
+              </div>
+            </div>
+            
+            <div class="insight-item">
+              <span class="insight-icon"></span>
+              <div class="insight-content">
+                <span class="insight-label">Delivery Time</span>
+                <span class="insight-value delivery-time">{{ product.metafields.custom.delivery_time | default: "3-5 days Shipping" }}</span>
+              </div>
+            </div>
+            
+            <div class="insight-item">
+              <span class="insight-icon"></span>
+              <div class="insight-content">
+                <span class="insight-label">Expected ROAS</span>
+                <span class="insight-value roas">{{ product.metafields.custom.expected_roas | default: "2.2x - 3.8x" }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Available Variants Card -->
+        <div class="variants-card">
+          <div class="variants-header">
+            <span class="variants-icon">📦</span>
+            <h3>Available Variants ({{ product.variants.size }})</h3>
+          </div>
+          
+          <div class="variants-table">
+            <div class="table-header">
+              <div class="col-variant">Variant</div>
+              <div class="col-sku">SKU Code</div>
+              <div class="col-price">Product Price</div>
+              <div class="col-delivery">Delivery (COD)</div>
+              <div class="col-total">Total Cost</div>
+              <div class="col-suggested">Suggested Selling Price</div>
+            </div>
+            
+            {% for variant in product.variants %}
+            <div class="table-row" data-variant-id="{{ variant.id }}">
+              <div class="col-variant">
+                <span class="variant-name">{{ variant.title }}</span>
+                {% if forloop.first %}
+                <span class="popular-badge">Most Popular</span>
+                {% endif %}
+              </div>
+              <div class="col-sku">
+                <span class="sku-code" 
+                      data-sku-uae="{{ variant.sku | default: 'SKU-' | append: variant.id }}"
+                      data-sku-ksa="{{ variant.sku | default: 'SKU-' | append: variant.id | append: '-KSA' }}">
+                  {{ variant.sku | default: "SKU-" | append: variant.id }}
+                </span>
+              </div>
+              <div class="col-price">
+                <span class="product-price" 
+                      data-price-uae="{{ product.metafields.custom.product_price | default: variant.price }}"
+                      data-price-ksa="{{ product.metafields.custom.product_price | default: variant.price }}"
+                      data-currency-uae="AED"
+                      data-currency-ksa="SAR">
+                  {{ variant.price | money }}
+                </span>
+              </div>
+              <div class="col-delivery">
+                <span class="delivery-cost" 
+                      data-delivery-uae="{{ product.metafields.custom.delivery_cost | default: '15 AED' }}"
+                      data-delivery-ksa="{{ product.metafields.custom.ksa_delivery_cost | default: '25 SAR' }}">
+                  {{ product.metafields.custom.delivery_cost | default: "15 AED" }}
+                </span>
+              </div>
+              <div class="col-total">
+                <span class="total-cost" 
+                      data-total-uae="{{ variant.price | plus: 1500 }}"
+                      data-total-ksa="{{ product.metafields.custom.ksa_total_cost | default: variant.price | plus: 2000 }}">
+                  {{ variant.price | plus: 1500 | money }}
+                </span>
+              </div>
+              <div class="col-suggested">
+                <span class="suggested-price" 
+                      data-suggested-uae="{{ product.metafields.custom.suggested_selling_price_uae | default: variant.price | plus: 3000 | money }}"
+                      data-suggested-ksa="{{ product.metafields.custom.suggested_selling_price_ksa | default: variant.price | plus: 3500 | money }}">
+                  {{ product.metafields.custom.suggested_selling_price_uae | default: variant.price | plus: 3000 | money }}
+                </span>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </section>
+    </div>
+  </div>
+</section>
+
+<style>
+  
+/* Complete Product Page Styles - Fully Isolated */
+.dynamic-product-page {
+  margin: 0 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  position: relative;
+  z-index: 9999;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+/* Break out of any Shopify theme containers */
+.dynamic-product-page,
+.dynamic-product-page > * {
+  position: relative !important;
+}
+
+/* Full viewport breakout wrapper */
+.full-viewport-breakout {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+.dynamic-product-page *,
+.dynamic-product-page *::before,
+.dynamic-product-page *::after {
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  outline: none !important;
+  text-decoration: none !important;
+  list-style: none !important;
+}
+
+/* Override Shopify theme constraints */
+.dynamic-product-page .container,
+.dynamic-product-page .page-width,
+.dynamic-product-page .wrapper,
+.dynamic-product-page .main,
+.dynamic-product-page .content,
+.dynamic-product-page .product-page,
+.dynamic-product-page .template-product,
+.dynamic-product-page .shopify-section {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: relative !important;
+}
+
+
+.dynamic-product-page .product-layout-flex {
+  display: flex !important;
+  gap: 40px !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  align-items: flex-start !important;
+}
+
+.dynamic-product-page .product-image-section {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.dynamic-product-page .product-info-section {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .dynamic-product-page .product-layout-flex {
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+  
+  .dynamic-product-page .product-image-section,
+  .dynamic-product-page .product-info-section {
+    flex: none !important;
+    width: 100% !important;
+  }
+}
+
+/* Product Images */
+.dynamic-product-page .product-image-gallery {
+  position: relative !important;
+}
+
+.dynamic-product-page .main-image-container {
+  position: relative !important;
+  margin-bottom: 20px !important;
+}
+
+.dynamic-product-page .main-product-image {
+  width: 100% !important;
+  height: 400px !important;
+  object-fit: cover !important;
+  border-radius: 8px !important;
+  background: #f8f9fa !important;
+}
+
+.dynamic-product-page .image-counter {
+  position: absolute !important;
+  bottom: 10px !important;
+  right: 10px !important;
+  background: rgba(0,0,0,0.7) !important;
+  color: white !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+}
+
+.dynamic-product-page .thumbnail-gallery {
+  display: flex !important;
+  gap: 10px !important;
+  overflow-x: auto !important;
+  padding: 5px 0 !important;
+  scrollbar-width: thin !important;
+}
+
+.dynamic-product-page .thumbnail-gallery::-webkit-scrollbar {
+  height: 6px !important;
+}
+
+.dynamic-product-page .thumbnail-gallery::-webkit-scrollbar-track {
+  background: #f1f1f1 !important;
+  border-radius: 3px !important;
+}
+
+.dynamic-product-page .thumbnail-gallery::-webkit-scrollbar-thumb {
+  background: #c1c1c1 !important;
+  border-radius: 3px !important;
+}
+
+.dynamic-product-page .thumbnail-gallery::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8 !important;
+}
+
+.dynamic-product-page .thumbnail-item {
+  width: 90px !important;
+  height: 90px !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  cursor: pointer !important;
+  border: 2px solid transparent !important;
+  transition: border-color 0.2s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.dynamic-product-page .thumbnail-item.active {
+  border-color: #007bff !important;
+}
+
+.dynamic-product-page .thumbnail-image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+/* Product Information */
+.dynamic-product-page .product-info-container {
+  padding: 20px 0 !important;
+}
+
+.dynamic-product-page .breadcrumbs {
+  margin-bottom: 20px !important;
+  font-size: 14px !important;
+  color: #666 !important;
+}
+
+.dynamic-product-page .breadcrumbs a {
+  color: #007bff !important;
+  text-decoration: none !important;
+}
+
+.dynamic-product-page .breadcrumbs a:hover {
+  text-decoration: underline !important;
+}
+
+.dynamic-product-page .product-title {
+  font-size: 32px !important;
+  font-weight: 700 !important;
+  color: #000 !important;
+  margin: 0 0 10px 0 !important;
+  line-height: 1.2 !important;
+}
+
+.dynamic-product-page .product-tagline {
+  font-size: 18px !important;
+  color: #666 !important;
+  margin: 0 0 15px 0 !important;
+  font-style: italic !important;
+}
+
+
+.dynamic-product-page .inventory-location {
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 20px !important;
+  font-size: 14px !important;
+  color: #666 !important;
+}
+
+.dynamic-product-page .location-icon {
+  margin-right: 8px !important;
+}
+
+
+/* Product Details Card */
+.dynamic-product-page .product-details-card {
+  background: #f8f9fa !important;
+  border-radius: 8px !important;
+  padding: 20px !important;
+  margin-bottom: 30px !important;
+  border: 1px solid #e9ecef !important;
+}
+
+.dynamic-product-page .product-details-card h3 {
+  margin: 0 0 10px 0 !important;
+  font-size: 18px !important;
+  color: #333 !important;
+}
+
+.dynamic-product-page .product-description-container {
+  position: relative !important;
+}
+
+.dynamic-product-page .product-description {
+  margin: 0 !important;
+  line-height: 1.5 !important;
+  font-size: 14px !important;
+  color: #666 !important;
+  transition: all 0.3s ease !important;
+}
+
+.dynamic-product-page .product-description.collapsed {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+}
+
+.dynamic-product-page .read-more-wrapper {
+  margin-top: 10px !important;
+}
+
+.dynamic-product-page .read-more-link {
+  color: #007bff !important;
+  text-decoration: none !important;
+  font-size: 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  transition: color 0.2s ease !important;
+}
+
+.dynamic-product-page .read-more-link:hover {
+  color: #0056b3 !important;
+}
+
+.dynamic-product-page .arrow {
+  margin-left: 5px !important;
+  transition: transform 0.2s ease !important;
+}
+
+.dynamic-product-page .arrow.expanded {
+  transform: rotate(180deg) !important;
+}
+
+/* Full Width Sections */
+.dynamic-product-page .full-width-sections {
+  width: 100% !important;
+  max-width: 100% !important;
+  background: #ffffff !important;
+  padding: 40px 0 !important;
+  margin: 0 !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+}
+
+.dynamic-product-page .full-width-container {
+  max-width: 1400px !important;
+  margin: 0 auto !important;
+  padding: 0 40px !important;
+  width: 100% !important;
+}
+
+/* Main Tabs */
+.dynamic-product-page .main-tabs {
+  display: flex !important;
+  justify-content: center !important;
+  margin-bottom: 40px !important;
+  border-bottom: 1px solid #e9ecef !important;
+  padding: 0 20px !important;
+}
+
+.dynamic-product-page .tab-btn {
+  padding: 12px 24px !important;
+  border: none !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  color: #666 !important;
+  border-bottom: 2px solid transparent !important;
+  transition: all 0.2s ease !important;
+}
+
+.dynamic-product-page .tab-btn.active {
+  color: #28a745 !important;
+  border-bottom-color: #28a745 !important;
+}
+
+/* Dropshipping Information */
+.dynamic-product-page .dropshipping-info {
+  background: #f8f9fa !important;
+  border-radius: 8px !important;
+  padding: 30px !important;
+  margin-bottom: 30px !important;
+}
+
+.dynamic-product-page .info-header {
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 15px !important;
+}
+
+.dynamic-product-page .info-icon {
+  margin-right: 10px !important;
+  font-size: 18px !important;
+}
+
+.dynamic-product-page .info-header h3 {
+  margin: 0 !important;
+  font-size: 18px !important;
+  color: #333 !important;
+}
+
+.dynamic-product-page .select-country {
+  display: flex !important;
+  align-items: center !important;
+  gap: 15px !important;
+}
+
+.dynamic-product-page .country-label {
+  font-weight: 500 !important;
+  color: #333 !important;
+}
+
+.dynamic-product-page .country-selection {
+  display: flex !important;
+  gap: 10px !important;
+}
+
+.dynamic-product-page .country-select-btn {
+  padding: 8px 16px !important;
+  border: 1px solid #ddd !important;
+  background: #f8f9fa !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease !important;
+}
+
+.dynamic-product-page .country-select-btn.active {
+  background: #28a745 !important;
+  color: white !important;
+  border-color: #28a745 !important;
+}
+
+/* Market Insights Card */
+.dynamic-product-page .market-insights-card {
+  background: #f8f9fa !important;
+  border-radius: 8px !important;
+  padding: 30px !important;
+  margin-bottom: 30px !important;
+  border: 1px solid #e9ecef !important;
+}
+
+.dynamic-product-page .insights-header {
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 20px !important;
+}
+
+.dynamic-product-page .insights-icon {
+  margin-right: 10px !important;
+  font-size: 18px !important;
+}
+
+.dynamic-product-page .insights-header h3 {
+  margin: 0 !important;
+  font-size: 18px !important;
+  color: #333 !important;
+}
+
+.dynamic-product-page .insights-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+  gap: 15px !important;
+}
+
+/* Mobile Market Insights Slider */
+@media (max-width: 768px) {
+  .dynamic-product-page .insights-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    gap: 10px !important;
+    padding: 10px 0 !important;
+    scroll-behavior: smooth !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  .dynamic-product-page .insight-item {
+    flex: 0 0 250px !important;
+    min-width: 250px !important;
+  }
+  
+  .dynamic-product-page .insights-grid::-webkit-scrollbar {
+    height: 4px !important;
+  }
+  
+  .dynamic-product-page .insights-grid::-webkit-scrollbar-track {
+    background: #f1f1f1 !important;
+    border-radius: 2px !important;
+  }
+  
+  .dynamic-product-page .insights-grid::-webkit-scrollbar-thumb {
+    background: #c1c1c1 !important;
+    border-radius: 2px !important;
+  }
+}
+
+.dynamic-product-page .insight-item {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  padding: 15px !important;
+  background: white !important;
+  border-radius: 6px !important;
+  border: 1px solid #e9ecef !important;
+  text-align: center !important;
+}
+
+.dynamic-product-page .insight-icon {
+  font-size: 16px !important;
+}
+
+.dynamic-product-page .insight-content {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 3px !important;
+  width: 100% !important;
+}
+
+.dynamic-product-page .insight-label {
+  font-size: 12px !important;
+  color: #666 !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+}
+
+.dynamic-product-page .insight-value {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  text-align: center !important;
+}
+
+.dynamic-product-page .saturation-low {
+  background: #d4edda !important;
+  color: #155724 !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  font-size: 12px !important;
+}
+
+.dynamic-product-page .delivery-success {
+  background: #cce5ff !important;
+  color: #004085 !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  font-size: 12px !important;
+}
+
+.dynamic-product-page .dispatch-time {
+  background: #cce5ff !important;
+  color: #004085 !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  font-size: 12px !important;
+}
+
+.dynamic-product-page .delivery-time {
+  background: #d4edda !important;
+  color: #155724 !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  font-size: 12px !important;
+}
+
+.dynamic-product-page .roas {
+  background: #fff3cd !important;
+  color: #856404 !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  font-size: 12px !important;
+}
+
+/* Variants Card */
+.dynamic-product-page .variants-card {
+  background: #f8f9fa !important;
+  border-radius: 8px !important;
+  padding: 30px !important;
+  border: 1px solid #e9ecef !important;
+}
+
+.dynamic-product-page .variants-header {
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 20px !important;
+}
+
+.dynamic-product-page .variants-icon {
+  margin-right: 10px !important;
+  font-size: 18px !important;
+}
+
+.dynamic-product-page .variants-header h3 {
+  margin: 0 !important;
+  font-size: 18px !important;
+  color: #333 !important;
+}
+
+.dynamic-product-page .variants-table {
+  background: white !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  border: 1px solid #e9ecef !important;
+}
+
+.dynamic-product-page .table-header {
+  display: grid !important;
+  grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1.5fr !important;
+  background: #f8f9fa !important;
+  padding: 15px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  color: #333 !important;
+  border-bottom: 1px solid #e9ecef !important;
+}
+
+/* Hide table header on mobile */
+@media (max-width: 768px) {
+  .dynamic-product-page .table-header {
+    display: none !important;
+  }
+  
+  /* Mobile improvements */
+  .dynamic-product-page .full-width-container {
+    padding: 0 20px !important;
+  }
+  
+  .dynamic-product-page .product-title {
+    font-size: 24px !important;
+  }
+  
+  .dynamic-product-page .main-product-image {
+    height: 300px !important;
+  }
+  
+  .dynamic-product-page .main-tabs {
+    padding: 0 10px !important;
+    margin-bottom: 20px !important;
+  }
+  
+  .dynamic-product-page .tab-btn {
+    padding: 10px 16px !important;
+    font-size: 14px !important;
+  }
+  
+  .dynamic-product-page .country-selection {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+  
+  .dynamic-product-page .select-country {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}
+
+.dynamic-product-page .table-row {
+  display: grid !important;
+  grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1.5fr !important;
+  padding: 15px !important;
+  border-bottom: 1px solid #f1f3f4 !important;
+  align-items: center !important;
+}
+
+.dynamic-product-page .table-row:last-child {
+  border-bottom: none !important;
+}
+
+.dynamic-product-page .variant-name {
+  font-weight: 500 !important;
+  color: #333 !important;
+  display: block !important;
+  margin-bottom: 5px !important;
+}
+
+.dynamic-product-page .popular-badge {
+  background: #28a745 !important;
+  color: white !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+}
+
+.dynamic-product-page .sku-code {
+  font-family: monospace !important;
+  font-size: 12px !important;
+  color: #666 !important;
+}
+
+.dynamic-product-page .product-price {
+  color: #28a745 !important;
+  font-weight: 600 !important;
+}
+
+.dynamic-product-page .delivery-cost {
+  color: #666 !important;
+  font-size: 14px !important;
+}
+
+.dynamic-product-page .total-cost {
+  color: #007bff !important;
+  font-weight: 600 !important;
+}
+
+.dynamic-product-page .suggested-price {
+  color: #666 !important;
+  font-style: italic !important;
+}
+
+@media (max-width: 768px) {
+  /* Variants Table Slider */
+  .dynamic-product-page .variants-table {
+    display: flex !important;
+    overflow-x: auto !important;
+    gap: 15px !important;
+    padding: 10px 0 !important;
+    scroll-behavior: smooth !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  .dynamic-product-page .table-row {
+    flex: 0 0 280px !important;
+    min-width: 280px !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    padding: 20px 15px !important;
+    border: 1px solid #e9ecef !important;
+    border-radius: 8px !important;
+    background: white !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+  }
+  
+  .dynamic-product-page .table-row:last-child {
+    border-bottom: 1px solid #e9ecef !important;
+  }
+  
+  .dynamic-product-page .variants-table::-webkit-scrollbar {
+    height: 4px !important;
+  }
+  
+  .dynamic-product-page .variants-table::-webkit-scrollbar-track {
+    background: #f1f1f1 !important;
+    border-radius: 2px !important;
+  }
+  
+  .dynamic-product-page .variants-table::-webkit-scrollbar-thumb {
+    background: #c1c1c1 !important;
+    border-radius: 2px !important;
+  }
+  
+  .dynamic-product-page .col-variant::before { 
+    content: "Variant: " !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+  }
+  .dynamic-product-page .col-sku::before { 
+    content: "SKU: " !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+  }
+  .dynamic-product-page .col-price::before { 
+    content: "Price: " !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+  }
+  .dynamic-product-page .col-delivery::before { 
+    content: "Delivery: " !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+  }
+  .dynamic-product-page .col-total::before { 
+    content: "Total: " !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+  }
+  .dynamic-product-page .col-suggested::before { 
+    content: "Suggested: " !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  
+  // Country selection functionality
+  const countryButtons = document.querySelectorAll('.dynamic-product-page .country-btn, .dynamic-product-page .country-select-btn');
+  const selectedCountrySpan = document.querySelector('.dynamic-product-page .selected-country');
+  
+  countryButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      // Remove active class from all buttons
+      countryButtons.forEach(btn => btn.classList.remove('active'));
+      
+      // Add active class to clicked button
+      this.classList.add('active');
+      
+      // Update selected country display
+      const country = this.dataset.country || this.textContent.trim();
+      if (selectedCountrySpan) {
+        selectedCountrySpan.textContent = country.toUpperCase();
+      }
+      
+      // Update market insights based on country
+      updateMarketInsights(country);
+    });
+  });
+  
+  // Tab functionality
+  const tabButtons = document.querySelectorAll('.dynamic-product-page .tab-btn');
+  
+  tabButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      // Remove active class from all tabs
+      tabButtons.forEach(tab => tab.classList.remove('active'));
+      
+      // Add active class to clicked tab
+      this.classList.add('active');
+    });
+  });
+  
+  // Thumbnail gallery functionality
+  const thumbnailItems = document.querySelectorAll('.dynamic-product-page .thumbnail-item');
+  const mainImage = document.querySelector('.dynamic-product-page .main-product-image');
+  
+  thumbnailItems.forEach(item => {
+    item.addEventListener('click', function() {
+      // Remove active class from all thumbnails
+      thumbnailItems.forEach(thumb => thumb.classList.remove('active'));
+      
+      // Add active class to clicked thumbnail
+      this.classList.add('active');
+      
+      // Update main image (you would need to implement this based on your image structure)
+      const thumbnailImg = this.querySelector('.thumbnail-image');
+      if (thumbnailImg && mainImage) {
+        mainImage.src = thumbnailImg.src.replace('300x', '1920x');
+      }
+    });
+  });
+  
+  // Dynamic Read More functionality
+  const productDescription = document.querySelector('.dynamic-product-page .product-description');
+  const readMoreWrapper = document.querySelector('.dynamic-product-page .read-more-wrapper');
+  const readMoreLink = document.querySelector('.dynamic-product-page .read-more-link');
+  const arrow = document.querySelector('.dynamic-product-page .arrow');
+  
+  if (productDescription && readMoreWrapper && readMoreLink) {
+    // Check if content exceeds 3 lines
+    const lineHeight = parseInt(window.getComputedStyle(productDescription).lineHeight);
+    const maxHeight = lineHeight * 3;
+    
+    if (productDescription.scrollHeight > maxHeight) {
+      // Show read more button and collapse content
+      readMoreWrapper.style.display = 'block';
+      productDescription.classList.add('collapsed');
+      
+      // Add click event listener
+      readMoreLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        if (productDescription.classList.contains('collapsed')) {
+          // Expand
+          productDescription.classList.remove('collapsed');
+          readMoreLink.innerHTML = 'Read Less <span class="arrow expanded">↓</span>';
+        } else {
+          // Collapse
+          productDescription.classList.add('collapsed');
+          readMoreLink.innerHTML = 'Read More <span class="arrow">↓</span>';
+        }
+      });
+    }
+  }
+  
+  function updateMarketInsights(country) {
+    // Update market insights based on the selected country
+    console.log('Updating market insights for:', country);
+    
+    // Update dispatch time based on selected country
+    const dispatchTimeElement = document.querySelector('.dynamic-product-page .dispatch-time');
+    if (dispatchTimeElement) {
+      const newDispatchTime = dispatchTimeElement.getAttribute(`data-dispatch-time-${country}`);
+      if (newDispatchTime) {
+        dispatchTimeElement.textContent = newDispatchTime;
+      }
+    }
+    
+    // Update pricing and SKUs
+    updatePricingAndSKUs(country);
+  }
+  
+  function updatePricingAndSKUs(country) {
+    const tableRows = document.querySelectorAll('.dynamic-product-page .table-row[data-variant-id]');
+    
+    tableRows.forEach(row => {
+      // Update SKU
+      const skuElement = row.querySelector('.sku-code');
+      if (skuElement) {
+        const newSKU = skuElement.getAttribute(`data-sku-${country}`);
+        if (newSKU) {
+          skuElement.textContent = newSKU;
+        }
+      }
+      
+      // Update Product Price
+      const priceElement = row.querySelector('.product-price');
+      if (priceElement) {
+        const newPrice = priceElement.getAttribute(`data-price-${country}`);
+        const currency = priceElement.getAttribute(`data-currency-${country}`);
+        if (newPrice && currency) {
+          priceElement.textContent = formatPrice(newPrice, currency);
+        }
+      }
+      
+      // Update Delivery Cost
+      const deliveryElement = row.querySelector('.delivery-cost');
+      if (deliveryElement) {
+        const newDelivery = deliveryElement.getAttribute(`data-delivery-${country}`);
+        if (newDelivery) {
+          deliveryElement.textContent = newDelivery;
+        }
+      }
+      
+      // Update Total Cost
+      const totalElement = row.querySelector('.total-cost');
+      if (totalElement) {
+        const newTotal = totalElement.getAttribute(`data-total-${country}`);
+        const currency = row.querySelector('.product-price').getAttribute(`data-currency-${country}`);
+        if (newTotal && currency) {
+          totalElement.textContent = formatPrice(newTotal, currency);
+        }
+      }
+      
+      // Update Suggested Price
+      const suggestedElement = row.querySelector('.suggested-price');
+      if (suggestedElement) {
+        const newSuggested = suggestedElement.getAttribute(`data-suggested-${country}`);
+        if (newSuggested) {
+          suggestedElement.textContent = newSuggested;
+        }
+      }
+    });
+  }
+  
+  function formatPrice(amount, currency) {
+    const numAmount = parseInt(amount);
+    const formattedAmount = (numAmount / 100).toFixed(2);
+    return `${currency} ${formattedAmount}`;
+  }
+});
+</script>
+
+{% schema %}
+{
+  "name": "Complete Product Page",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "top_spacing",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "normal",
+          "label": "Normal"
+        }
+      ],
+      "default": "normal",
+      "label": "Top Spacing"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "page-width",
+          "label": "Page Width"
+        },
+        {
+          "value": "page-wide",
+          "label": "Page Wide"
+        }
+      ],
+      "default": "default",
+      "label": "Width"
+    }
+  ]
+}
+{% endschema %}

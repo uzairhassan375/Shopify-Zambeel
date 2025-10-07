@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Pillow - Memory Foam | Product Page</title>
+    <style>
+/* Complete Product Page Styles */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+/* Product Images */
+.product-image-gallery {
+  position: relative;
+}
+
+.main-image-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.main-product-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f8f9fa;
+}
+
+.image-counter {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.thumbnail-gallery {
+  display: flex;
+  gap: 10px;
+}
+
+.thumbnail-item {
+  width: 80px;
+  height: 80px;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.thumbnail-item.active {
+  border-color: #007bff;
+}
+
+.thumbnail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Product Information */
+.product-info-container {
+  padding: 20px 0;
+}
+
+.breadcrumbs {
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+.breadcrumbs a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+  text-decoration: underline;
+}
+
+.product-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+}
+
+.product-tagline {
+  font-size: 18px;
+  color: #666;
+  margin: 0 0 15px 0;
+  font-style: italic;
+}
+
+.product-description {
+  margin-bottom: 20px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.inventory-location {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+.location-icon {
+  margin-right: 8px;
+}
+
+.sellable-countries {
+  margin-bottom: 20px;
+}
+
+.countries-label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #333;
+}
+
+.country-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.country-btn {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background: #f8f9fa;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.country-btn.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* Product Details Card */
+.product-details-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  border: 1px solid #e9ecef;
+}
+
+.product-details-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.read-more-link {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.arrow {
+  margin-left: 5px;
+  transition: transform 0.2s ease;
+}
+
+/* Full Width Sections */
+.full-width-sections {
+  width: 100%;
+  background: #ffffff;
+  padding: 40px 0;
+}
+
+.full-width-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Main Tabs */
+.main-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #e9ecef;
+  padding: 0 20px;
+}
+
+.tab-btn {
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+  color: #28a745;
+  border-bottom-color: #28a745;
+}
+
+/* Dropshipping Information */
+.dropshipping-info {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 30px;
+  margin-bottom: 30px;
+}
+
+.info-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.info-icon {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.info-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.select-country {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.country-label {
+  font-weight: 500;
+  color: #333;
+}
+
+.country-selection {
+  display: flex;
+  gap: 10px;
+}
+
+.country-select-btn {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background: #f8f9fa;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.country-select-btn.active {
+  background: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+
+/* Market Insights Card */
+.market-insights-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 30px;
+  margin-bottom: 30px;
+  border: 1px solid #e9ecef;
+}
+
+.insights-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.insights-icon {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.insights-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.insight-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.insight-icon {
+  font-size: 16px;
+}
+
+.insight-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.insight-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.insight-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.saturation-low {
+  background: #d4edda;
+  color: #155724;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.delivery-success {
+  background: #cce5ff;
+  color: #004085;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.dispatch-time {
+  background: #cce5ff;
+  color: #004085;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.delivery-time {
+  background: #d4edda;
+  color: #155724;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.roas {
+  background: #fff3cd;
+  color: #856404;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+/* Variants Card */
+.variants-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 30px;
+  border: 1px solid #e9ecef;
+}
+
+.variants-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.variants-icon {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.variants-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.variants-table {
+  background: white;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1.5fr;
+  background: #f8f9fa;
+  padding: 15px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1.5fr;
+  padding: 15px;
+  border-bottom: 1px solid #f1f3f4;
+  align-items: center;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.variant-name {
+  font-weight: 500;
+  color: #333;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.popular-badge {
+  background: #28a745;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.sku-code {
+  font-family: monospace;
+  font-size: 12px;
+  color: #666;
+}
+
+.product-price {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.delivery-cost {
+  color: #666;
+  font-size: 14px;
+}
+
+.total-cost {
+  color: #007bff;
+  font-weight: 600;
+}
+
+.suggested-price {
+  color: #666;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .table-header,
+  .table-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .col-variant,
+  .col-sku,
+  .col-price,
+  .col-delivery,
+  .col-total,
+  .col-suggested {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid #f1f3f4;
+  }
+  
+  .col-variant::before { content: "Variant: "; }
+  .col-sku::before { content: "SKU: "; }
+  .col-price::before { content: "Price: "; }
+  .col-delivery::before { content: "Delivery: "; }
+  .col-total::before { content: "Total: "; }
+  .col-suggested::before { content: "Suggested: "; }
+}
+    </style>
+</head>
+<body>
+    <!-- Product Images and Info Section - Full Width -->
+    <section class="full-width-sections">
+        <div class="full-width-container">
+            <div class="grid">
+                <!-- Product Images -->
+                <div class="col-sp-12 col-st-6 col-6 product--thumbnail_slider">
+                    <div class="product-image-gallery">
+                        <div class="main-image-container">
+                            <img src="https://via.placeholder.com/600x400/f8f9fa/666666?text=Face+Pillow+Memory+Foam" 
+                                 alt="Face Pillow Memory Foam" 
+                                 class="main-product-image">
+                            <div class="image-counter">
+                                <span class="current-image">1</span>/<span class="total-images">3</span>
+                            </div>
+                        </div>
+                        
+                        <div class="thumbnail-gallery">
+                            <div class="thumbnail-item active">
+                                <img src="https://via.placeholder.com/100x100/f8f9fa/666666?text=Main" 
+                                     alt="Main view" 
+                                     class="thumbnail-image">
+                            </div>
+                            <div class="thumbnail-item">
+                                <img src="https://via.placeholder.com/100x100/f8f9fa/666666?text=Side" 
+                                     alt="Side view" 
+                                     class="thumbnail-image">
+                            </div>
+                            <div class="thumbnail-item">
+                                <img src="https://via.placeholder.com/100x100/f8f9fa/666666?text=Cross" 
+                                     alt="Cross section" 
+                                     class="thumbnail-image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Information -->
+                <div class="col-sp-12 col-st-6 col-6 product__right-column">
+                    <div class="product-info-container">
+                        <!-- Breadcrumbs -->
+                        <nav class="breadcrumbs">
+                            <a href="/">Home</a> / 
+                            <a href="/collections/all">Products</a> / 
+                            <span>Face Pillow - Memory Foam</span>
+                        </nav>
+
+                        <!-- Product Title -->
+                        <h1 class="product-title">Face Pillow - Memory Foam</h1>
+                        
+                        <!-- Tagline -->
+                        <p class="product-tagline">Ergonomic beauty sleep aid</p>
+                        
+                        <!-- Product Description -->
+                        <div class="product-description">
+                            <p>Soft memory foam pillow designed for enhanced comfort and ergonomic support during sleep.</p>
+                        </div>
+
+                        <!-- Inventory Location -->
+                        <div class="inventory-location">
+                            <span class="location-icon">📍</span>
+                            <span>Inventory Location: UAE-Warehouse</span>
+                        </div>
+
+                        <!-- Sellable Countries -->
+                        <div class="sellable-countries">
+                            <span class="countries-label">Sellable Countries:</span>
+                            <div class="country-buttons">
+                                <button class="country-btn active" data-country="uae">UAE</button>
+                                <button class="country-btn" data-country="ksa">KSA</button>
+                            </div>
+                        </div>
+
+                        <!-- Product Details Card -->
+                        <div class="product-details-card">
+                            <h3>Product Details</h3>
+                            <p>Soft memory foam pillow designed for enhanced comfort and ergonomic support during sleep. Features premium memory foam construction with breathable cover.</p>
+                            <a href="#" class="read-more-link">
+                                Read More <span class="arrow">↓</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Full Width Sections After Image -->
+    <section class="full-width-sections">
+        <div class="full-width-container">
+
+            <!-- Main Tabs -->
+            <div class="main-tabs">
+                <button class="tab-btn active" data-tab="dropshipping">Dropshipping</button>
+                <button class="tab-btn" data-tab="wholesale">Wholesale</button>
+                <button class="tab-btn" data-tab="customisation">Customisation</button>
+            </div>
+
+            <!-- Dropshipping Information -->
+            <div class="dropshipping-info">
+                <div class="info-header">
+                    <span class="info-icon">📦</span>
+                    <h3>Dropshipping Information</h3>
+                </div>
+                
+                <div class="select-country">
+                    <span class="country-label">Select Country:</span>
+                    <div class="country-selection">
+                        <button class="country-select-btn active" data-country="uae">AE UAE</button>
+                        <button class="country-select-btn" data-country="ksa">SA KSA</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market Insights Card -->
+            <div class="market-insights-card">
+                <div class="insights-header">
+                    <span class="insights-icon">🎯</span>
+                    <h3>Market Insights for <span class="selected-country">UAE</span></h3>
+                </div>
+                
+                <div class="insights-grid">
+                    <div class="insight-item">
+                        <span class="insight-icon">📈</span>
+                        <div class="insight-content">
+                            <span class="insight-label">Market Saturation</span>
+                            <span class="insight-value saturation-low">Low</span>
+                        </div>
+                    </div>
+                    
+                    <div class="insight-item">
+                        <span class="insight-icon">🚚</span>
+                        <div class="insight-content">
+                            <span class="insight-label">Delivery Success</span>
+                            <span class="insight-value delivery-success">88% good</span>
+                        </div>
+                    </div>
+                    
+                    <div class="insight-item">
+                        <span class="insight-icon">⏰</span>
+                        <div class="insight-content">
+                            <span class="insight-label">Dispatch Time</span>
+                            <span class="insight-value dispatch-time">1-2 days Processing</span>
+                        </div>
+                    </div>
+                    
+                    <div class="insight-item">
+                        <span class="insight-icon">🚛</span>
+                        <div class="insight-content">
+                            <span class="insight-label">Delivery Time</span>
+                            <span class="insight-value delivery-time">3-5 days Shipping</span>
+                        </div>
+                    </div>
+                    
+                    <div class="insight-item">
+                        <span class="insight-icon">💰</span>
+                        <div class="insight-content">
+                            <span class="insight-label">Expected ROAS</span>
+                            <span class="insight-value roas">2.2x - 3.8x</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Variants Card -->
+            <div class="variants-card">
+                <div class="variants-header">
+                    <span class="variants-icon">📦</span>
+                    <h3>Available Variants (3)</h3>
+                </div>
+                
+                <div class="variants-table">
+                    <div class="table-header">
+                        <div class="col-variant">Variant</div>
+                        <div class="col-sku">SKU Code</div>
+                        <div class="col-price">Product Price</div>
+                        <div class="col-delivery">Delivery (COD)</div>
+                        <div class="col-total">Total Cost</div>
+                        <div class="col-suggested">Suggested Selling Price</div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="col-variant">
+                            <span class="variant-name">Medium - Blue</span>
+                            <span class="popular-badge">Most Popular</span>
+                        </div>
+                        <div class="col-sku">
+                            <span class="sku-code">FP-DS-UAE-01-M-BL</span>
+                        </div>
+                        <div class="col-price">
+                            <span class="product-price">45 AED</span>
+                        </div>
+                        <div class="col-delivery">
+                            <span class="delivery-cost">15 AED</span>
+                        </div>
+                        <div class="col-total">
+                            <span class="total-cost">60 AED</span>
+                        </div>
+                        <div class="col-suggested">
+                            <span class="suggested-price">Not set</span>
+                        </div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="col-variant">
+                            <span class="variant-name">Large - Blue</span>
+                        </div>
+                        <div class="col-sku">
+                            <span class="sku-code">FP-DS-UAE-01-L-BL</span>
+                        </div>
+                        <div class="col-price">
+                            <span class="product-price">50 AED</span>
+                        </div>
+                        <div class="col-delivery">
+                            <span class="delivery-cost">15 AED</span>
+                        </div>
+                        <div class="col-total">
+                            <span class="total-cost">65 AED</span>
+                        </div>
+                        <div class="col-suggested">
+                            <span class="suggested-price">Not set</span>
+                        </div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="col-variant">
+                            <span class="variant-name">Medium - Red</span>
+                        </div>
+                        <div class="col-sku">
+                            <span class="sku-code">FP-DS-UAE-01-M-RD</span>
+                        </div>
+                        <div class="col-price">
+                            <span class="product-price">47 AED</span>
+                        </div>
+                        <div class="col-delivery">
+                            <span class="delivery-cost">15 AED</span>
+                        </div>
+                        <div class="col-total">
+                            <span class="total-cost">62 AED</span>
+                        </div>
+                        <div class="col-suggested">
+                            <span class="suggested-price">Not set</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Country selection functionality
+      const countryButtons = document.querySelectorAll('.country-btn, .country-select-btn');
+      const selectedCountrySpan = document.querySelector('.selected-country');
+      
+      countryButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          // Remove active class from all buttons
+          countryButtons.forEach(btn => btn.classList.remove('active'));
+          
+          // Add active class to clicked button
+          this.classList.add('active');
+          
+          // Update selected country display
+          const country = this.dataset.country || this.textContent.trim();
+          if (selectedCountrySpan) {
+            selectedCountrySpan.textContent = country.toUpperCase();
+          }
+          
+          // Update market insights based on country
+          updateMarketInsights(country);
+        });
+      });
+      
+      // Tab functionality
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      
+      tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          // Remove active class from all tabs
+          tabButtons.forEach(tab => tab.classList.remove('active'));
+          
+          // Add active class to clicked tab
+          this.classList.add('active');
+        });
+      });
+      
+      // Thumbnail gallery functionality
+      const thumbnailItems = document.querySelectorAll('.thumbnail-item');
+      const mainImage = document.querySelector('.main-product-image');
+      
+      thumbnailItems.forEach(item => {
+        item.addEventListener('click', function() {
+          // Remove active class from all thumbnails
+          thumbnailItems.forEach(thumb => thumb.classList.remove('active'));
+          
+          // Add active class to clicked thumbnail
+          this.classList.add('active');
+          
+          // Update main image (you would need to implement this based on your image structure)
+          const thumbnailImg = this.querySelector('.thumbnail-image');
+          if (thumbnailImg && mainImage) {
+            mainImage.src = thumbnailImg.src.replace('100x', '600x');
+          }
+        });
+      });
+      
+      function updateMarketInsights(country) {
+        // This function would update the market insights based on the selected country
+        // You can implement dynamic content updates here
+        console.log('Updating market insights for:', country);
+      }
+    });
+    </script>
+</body>
+</html>
