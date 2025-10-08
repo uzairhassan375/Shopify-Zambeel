@@ -66,7 +66,7 @@
             <h1 class="product-title">{{ product.title | escape }}</h1>
             
             <!-- Tagline -->
-            <p class="product-tagline">{{ product.metafields.custom.product_tagline | default: "Premium quality product" }}</p>
+            <p class="product-tagline">{{ product.metafields.custom.product_tagline | default: "Warranty 30 Days Replacement" }}</p>
             
 
             <!-- Inventory Location -->
@@ -117,24 +117,57 @@
             <div class="country-selection">
               {% assign inventory_location = product.metafields.custom.location | default: "UAE-Warehouse" %}
               {% if inventory_location contains "UAE" or inventory_location contains "uae" %}
-                <button class="country-select-btn active" data-country="uae">AE UAE</button>
+                <button class="country-select-btn" data-country="uae">UAE</button>
               {% endif %}
               {% if inventory_location contains "KSA" or inventory_location contains "ksa" or inventory_location contains "Saudi" %}
-                <button class="country-select-btn {% unless inventory_location contains "UAE" or inventory_location contains "uae" %}active{% endunless %}" data-country="ksa">SA KSA</button>
+                <button class="country-select-btn" data-country="ksa">KSA</button>
               {% endif %}
               {% unless inventory_location contains "UAE" or inventory_location contains "uae" or inventory_location contains "KSA" or inventory_location contains "ksa" or inventory_location contains "Saudi" %}
-                <button class="country-select-btn active" data-country="uae">AE UAE</button>
-                <button class="country-select-btn" data-country="ksa">SA KSA</button>
+                <button class="country-select-btn" data-country="uae">UAE</button>
+                <button class="country-select-btn" data-country="ksa">KSA</button>
               {% endunless %}
             </div>
           </div>
+
+          <!-- Variant Selection -->
+          <div class="variant-selection-section">
+            {% for option in product.options_with_values %}
+              {% assign option_name_lower = option.name | downcase %}
+              {% unless option_name_lower contains 'country' or option_name_lower contains 'warehouse' or option_name_lower contains 'location' %}
+                <div class="variant-option-group">
+                  <label class="variant-option-label">Select {{ option.name }}:</label>
+                  <select class="variant-option-select" data-option-position="{{ option.position }}" data-option-name="{{ option.name }}">
+                    {% for value in option.values %}
+                      <option value="{{ value | escape }}" {% if forloop.first %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              {% endunless %}
+            {% endfor %}
+          </div>
+          
+          <!-- Hidden variant data for JavaScript -->
+          <script type="application/json" id="variant-data">
+            [
+              {% for variant in product.variants %}
+              {
+                "id": {{ variant.id }},
+                "title": "{{ variant.title | escape }}",
+                "available": {{ variant.available }},
+                "option1": "{{ variant.option1 | escape }}",
+                "option2": "{{ variant.option2 | escape }}",
+                "option3": "{{ variant.option3 | escape }}"
+              }{% unless forloop.last %},{% endunless %}
+              {% endfor %}
+            ]
+          </script>
         </div>
 
         <!-- Market Insights Card -->
         <div class="market-insights-card">
           <div class="insights-header">
             <span class="insights-icon"></span>
-            <h3>Market Insights for <span class="selected-country">UAE</span></h3>
+            <h3>Market Insights<span class="selected-country-wrapper"> for <span class="selected-country"></span></span></h3>
           </div>
           
           <div class="insights-grid">
@@ -181,14 +214,26 @@
                 <span class="insight-value roas">{{ product.metafields.custom.expected_roas | default: "2.2x - 3.8x" }}</span>
               </div>
             </div>
+            
+            <div class="insight-item">
+              <span class="insight-icon"></span>
+              <div class="insight-content">
+                <span class="insight-label">Suggested Selling Price</span>
+                <span class="insight-value suggested-selling-price" 
+                      data-suggested-price-uae="{{ product.metafields.custom.suggested_selling_price_uae | default: current_variant.price | plus: 3000 | money }}"
+                      data-suggested-price-ksa="{{ product.metafields.custom.suggested_selling_price_ksa | default: current_variant.price | plus: 3500 | money }}">
+                  {{ product.metafields.custom.suggested_selling_price_uae | default: current_variant.price | plus: 3000 | money }}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Available Variants Card -->
+        <!-- Selected Variant Information Card -->
         <div class="variants-card">
           <div class="variants-header">
             <span class="variants-icon">📦</span>
-            <h3>Available Variants ({{ product.variants.size }})</h3>
+            <h3>Selected Variant Information</h3>
           </div>
           
           <div class="variants-table">
@@ -202,12 +247,9 @@
             </div>
             
             {% for variant in product.variants %}
-            <div class="table-row" data-variant-id="{{ variant.id }}">
+            <div class="table-row" data-variant-id="{{ variant.id }}" data-variant-title="{{ variant.title }}" style="display: none;">
               <div class="col-variant">
                 <span class="variant-name">{{ variant.title }}</span>
-                {% if forloop.first %}
-                <span class="popular-badge">Most Popular</span>
-                {% endif %}
               </div>
               <div class="col-sku">
                 <span class="sku-code" 
@@ -636,6 +678,51 @@
   border-color: #28a745 !important;
 }
 
+/* Variant Selection Section */
+.dynamic-product-page .variant-selection-section {
+  margin-top: 20px !important;
+  padding-top: 20px !important;
+  border-top: 1px solid #e9ecef !important;
+}
+
+.dynamic-product-page .variant-option-group {
+  margin-bottom: 15px !important;
+}
+
+.dynamic-product-page .variant-option-label {
+  display: block !important;
+  font-weight: 500 !important;
+  color: #333 !important;
+  margin-bottom: 8px !important;
+  font-size: 14px !important;
+}
+
+.dynamic-product-page .variant-option-select {
+  width: 100% !important;
+  padding: 10px 12px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 6px !important;
+  background: white !important;
+  font-size: 14px !important;
+  color: #333 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.dynamic-product-page .variant-option-select:hover {
+  border-color: #28a745 !important;
+}
+
+.dynamic-product-page .variant-option-select:focus {
+  border-color: #28a745 !important;
+  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1) !important;
+}
+
+.dynamic-product-page .variant-option-select option:disabled {
+  color: #ccc !important;
+  display: none !important;
+}
+
 /* Market Insights Card */
 .dynamic-product-page .market-insights-card {
   background: #f8f9fa !important;
@@ -664,8 +751,15 @@
 
 .dynamic-product-page .insights-grid {
   display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+  grid-template-columns: repeat(3, 1fr) !important;
   gap: 15px !important;
+}
+
+/* Tablet Market Insights */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .dynamic-product-page .insights-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
 }
 
 /* Mobile Market Insights Slider */
@@ -778,6 +872,15 @@
   font-size: 12px !important;
 }
 
+.dynamic-product-page .suggested-selling-price {
+  background: #e7f3ff !important;
+  color: #0066cc !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
 /* Variants Card */
 .dynamic-product-page .variants-card {
   background: #f8f9fa !important;
@@ -859,6 +962,20 @@
   .dynamic-product-page .select-country {
     flex-direction: column !important;
     align-items: flex-start !important;
+  }
+  
+  .dynamic-product-page .variant-selection-section {
+    margin-top: 15px !important;
+    padding-top: 15px !important;
+  }
+  
+  .dynamic-product-page .variant-option-group {
+    margin-bottom: 12px !important;
+  }
+  
+  .dynamic-product-page .variant-option-select {
+    font-size: 14px !important;
+    padding: 8px 10px !important;
   }
 }
 
@@ -993,9 +1110,168 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   
+  // Variant selection functionality
+  const variantSelects = document.querySelectorAll('.dynamic-product-page .variant-option-select');
+  let selectedCountry = null; // No default country
+  
+  // Load variant data from JSON
+  const variantDataElement = document.getElementById('variant-data');
+  const allVariants = variantDataElement ? JSON.parse(variantDataElement.textContent) : [];
+  
+  // Find which option is the country option (if exists)
+  let countryOptionPosition = null;
+  allVariants.forEach(variant => {
+    for (let i = 1; i <= 3; i++) {
+      const optionValue = variant[`option${i}`];
+      if (optionValue && (optionValue.toLowerCase().includes('uae') || optionValue.toLowerCase().includes('ksa') || optionValue.toLowerCase().includes('saudi'))) {
+        countryOptionPosition = i;
+        break;
+      }
+    }
+    if (countryOptionPosition) return;
+  });
+  
+  // Store original options for each select
+  const originalOptions = {};
+  variantSelects.forEach(select => {
+    const position = select.dataset.optionPosition;
+    originalOptions[position] = Array.from(select.options).map(opt => opt.value);
+  });
+  
+  // Add event listeners to variant selectors
+  variantSelects.forEach(select => {
+    select.addEventListener('change', function() {
+      filterAndDisplay();
+    });
+  });
+  
+  function filterAndDisplay() {
+    // Filter variants based on selected country
+    let filteredVariants = allVariants.filter(variant => {
+      // Filter by country if a country is selected
+      if (selectedCountry && countryOptionPosition) {
+        const variantCountry = variant[`option${countryOptionPosition}`];
+        if (!variantCountry || !variantCountry.toLowerCase().includes(selectedCountry)) {
+          return false;
+        }
+      }
+      return true;
+    });
+    
+    // If no country selected and no dropdowns have values, don't show anything
+    if (!selectedCountry) {
+      const allRows = document.querySelectorAll('.dynamic-product-page .table-row[data-variant-id]');
+      allRows.forEach(row => {
+        row.style.display = 'none';
+      });
+      return;
+    }
+    
+    // Get currently selected values
+    let selectedValues = {};
+    variantSelects.forEach(select => {
+      const position = select.dataset.optionPosition;
+      selectedValues[position] = select.value;
+    });
+    
+    // Update options for each select based on filtered variants
+    variantSelects.forEach(select => {
+      const currentPosition = select.dataset.optionPosition;
+      const availableOptions = new Set();
+      
+      filteredVariants.forEach(variant => {
+        // Check if this variant matches all OTHER selected options
+        let matches = true;
+        variantSelects.forEach(otherSelect => {
+          const otherPosition = otherSelect.dataset.optionPosition;
+          if (otherPosition !== currentPosition && selectedValues[otherPosition]) {
+            const variantOption = variant[`option${otherPosition}`];
+            if (variantOption !== selectedValues[otherPosition]) {
+              matches = false;
+            }
+          }
+        });
+        
+        if (matches) {
+          const optionValue = variant[`option${currentPosition}`];
+          if (optionValue) {
+            availableOptions.add(optionValue);
+          }
+        }
+      });
+      
+      // Update the select options
+      let hasSelectedValue = false;
+      Array.from(select.options).forEach(option => {
+        if (availableOptions.has(option.value)) {
+          option.disabled = false;
+          option.style.display = '';
+          // Auto-select first available option if current selection is not available
+          if (!hasSelectedValue && !selectedValues[currentPosition]) {
+            select.value = option.value;
+            hasSelectedValue = true;
+          }
+        } else {
+          option.disabled = true;
+          option.style.display = 'none';
+        }
+      });
+      
+      // If current selection is no longer available, select first available option
+      if (selectedValues[currentPosition] && !availableOptions.has(selectedValues[currentPosition])) {
+        const firstAvailable = Array.from(availableOptions)[0];
+        if (firstAvailable) {
+          select.value = firstAvailable;
+        }
+      }
+    });
+    
+    // Recalculate selected values after auto-selection
+    selectedValues = {};
+    variantSelects.forEach(select => {
+      const position = select.dataset.optionPosition;
+      selectedValues[position] = select.value;
+    });
+    
+    // Find and display matching variant
+    const matchingVariant = filteredVariants.find(variant => {
+      let matches = true;
+      variantSelects.forEach(select => {
+        const position = select.dataset.optionPosition;
+        const optionKey = `option${position}`;
+        if (variant[optionKey] !== select.value) {
+          matches = false;
+        }
+      });
+      return matches;
+    });
+    
+    // Hide all variant rows
+    const allRows = document.querySelectorAll('.dynamic-product-page .table-row[data-variant-id]');
+    allRows.forEach(row => {
+      row.style.display = 'none';
+    });
+    
+    // Show matching variant row if found
+    if (matchingVariant) {
+      allRows.forEach(row => {
+        const variantId = row.dataset.variantId;
+        if (variantId == matchingVariant.id) {
+          row.style.display = 'grid';
+        }
+      });
+    }
+  }
+  
   // Country selection functionality
   const countryButtons = document.querySelectorAll('.dynamic-product-page .country-btn, .dynamic-product-page .country-select-btn');
   const selectedCountrySpan = document.querySelector('.dynamic-product-page .selected-country');
+  const selectedCountryWrapper = document.querySelector('.dynamic-product-page .selected-country-wrapper');
+  
+  // Hide country wrapper initially
+  if (selectedCountryWrapper) {
+    selectedCountryWrapper.style.display = 'none';
+  }
   
   countryButtons.forEach(button => {
     button.addEventListener('click', function() {
@@ -1007,9 +1283,19 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Update selected country display
       const country = this.dataset.country || this.textContent.trim();
+      selectedCountry = country.toLowerCase(); // Update global country variable
+      
       if (selectedCountrySpan) {
         selectedCountrySpan.textContent = country.toUpperCase();
       }
+      
+      // Show country wrapper once a country is selected
+      if (selectedCountryWrapper) {
+        selectedCountryWrapper.style.display = 'inline';
+      }
+      
+      // Trigger filtering based on country selection
+      filterAndDisplay();
       
       // Update market insights based on country
       updateMarketInsights(country);
@@ -1092,6 +1378,15 @@ document.addEventListener('DOMContentLoaded', function() {
       const newDispatchTime = dispatchTimeElement.getAttribute(`data-dispatch-time-${country}`);
       if (newDispatchTime) {
         dispatchTimeElement.textContent = newDispatchTime;
+      }
+    }
+    
+    // Update suggested selling price in market insights
+    const suggestedPriceElement = document.querySelector('.dynamic-product-page .suggested-selling-price');
+    if (suggestedPriceElement) {
+      const newSuggestedPrice = suggestedPriceElement.getAttribute(`data-suggested-price-${country}`);
+      if (newSuggestedPrice) {
+        suggestedPriceElement.textContent = newSuggestedPrice;
       }
     }
     
