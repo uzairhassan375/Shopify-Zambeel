@@ -102,12 +102,12 @@
         <div class="main-tabs">
           <button class="tab-btn active" data-tab="dropshipping">Dropshipping</button>
           <button class="tab-btn" data-tab="wholesale">
-            Wholesale
             <span class="coming-soon-badge">Coming Soon</span>
+            Wholesale
           </button>
           <button class="tab-btn" data-tab="customisation">
-            Customisation
             <span class="coming-soon-badge">Coming Soon</span>
+            Customisation
           </button>
         </div>
 
@@ -624,8 +624,9 @@
   transition: all 0.2s ease !important;
   position: relative !important;
   display: flex !important;
+  flex-direction: column !important;
   align-items: center !important;
-  gap: 8px !important;
+  gap: 4px !important;
 }
 
 .dynamic-product-page .tab-btn.active {
@@ -641,12 +642,14 @@
 .dynamic-product-page .coming-soon-badge {
   background: #ffc107 !important;
   color: #000 !important;
-  padding: 2px 8px !important;
-  border-radius: 12px !important;
-  font-size: 11px !important;
+  padding: 1px 6px !important;
+  border-radius: 8px !important;
+  font-size: 9px !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
-  letter-spacing: 0.5px !important;
+  letter-spacing: 0.3px !important;
+  margin-left: 8px !important;
+  align-self: flex-start !important;
 }
 
 /* Dropshipping Information */
@@ -893,6 +896,7 @@
   padding: 2px 8px !important;
   border-radius: 12px !important;
   font-size: 12px !important;
+  animation: blink 2s infinite !important;
 }
 
 .dynamic-product-page .delivery-time {
@@ -901,6 +905,16 @@
   padding: 2px 8px !important;
   border-radius: 12px !important;
   font-size: 12px !important;
+  animation: blink 2s infinite !important;
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0.4;
+  }
 }
 
 .dynamic-product-page .roas {
@@ -1036,8 +1050,9 @@
   }
   
   .dynamic-product-page .coming-soon-badge {
-    font-size: 10px !important;
-    padding: 2px 6px !important;
+    font-size: 8px !important;
+    padding: 1px 4px !important;
+    margin-left: 6px !important;
   }
 }
 
