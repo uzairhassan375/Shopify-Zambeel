@@ -70,7 +70,7 @@
             
 
             <!-- Inventory Location -->
-            <div class="inventory-location">
+            <div class="inventory-location" style="display: none;">
               <span class="location-icon">📍</span>
               <span>Inventory Location: {{ product.metafields.custom.location | default: "UAE-Warehouse" }}</span>
             </div>
@@ -503,7 +503,7 @@
 
 
 .dynamic-product-page .inventory-location {
-  display: flex !important;
+  display: none !important;
   align-items: center !important;
   margin-bottom: 20px !important;
   font-size: 14px !important;
@@ -980,11 +980,15 @@
 }
 
 .dynamic-product-page .table-row {
-  display: grid !important;
+  display: none !important;
   grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1.5fr !important;
   padding: 15px !important;
   border-bottom: 1px solid #f1f3f4 !important;
   align-items: center !important;
+}
+
+.dynamic-product-page .table-row.visible {
+  display: grid !important;
 }
 
 .dynamic-product-page .table-row:last-child {
@@ -1145,11 +1149,27 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
+  // Initial call to set up the display (if no country options, show first variant)
+  if (!countryOptionPosition && variantSelects.length > 0) {
+    filterAndDisplay();
+  }
+  
   function filterAndDisplay() {
-    // Filter variants based on selected country
+    // Hide all variant rows first - ensure only selected variant is shown
+    const allRows = document.querySelectorAll('.dynamic-product-page .table-row[data-variant-id]');
+    allRows.forEach(row => {
+      row.classList.remove('visible');
+    });
+    
+    // If product has country options and no country selected, don't show anything
+    if (countryOptionPosition && !selectedCountry) {
+      return;
+    }
+    
+    // Filter variants based on selected country (if applicable)
     let filteredVariants = allVariants.filter(variant => {
-      // Filter by country if a country is selected
-      if (selectedCountry && countryOptionPosition) {
+      // Filter by country only if country option exists AND country is selected
+      if (countryOptionPosition && selectedCountry) {
         const variantCountry = variant[`option${countryOptionPosition}`];
         if (!variantCountry || !variantCountry.toLowerCase().includes(selectedCountry)) {
           return false;
@@ -1158,23 +1178,14 @@ document.addEventListener('DOMContentLoaded', function() {
       return true;
     });
     
-    // If no country selected and no dropdowns have values, don't show anything
-    if (!selectedCountry) {
-      const allRows = document.querySelectorAll('.dynamic-product-page .table-row[data-variant-id]');
-      allRows.forEach(row => {
-        row.style.display = 'none';
-      });
-      return;
-    }
-    
-    // Get currently selected values
+    // Get currently selected values from dropdowns
     let selectedValues = {};
     variantSelects.forEach(select => {
       const position = select.dataset.optionPosition;
       selectedValues[position] = select.value;
     });
     
-    // Update options for each select based on filtered variants
+    // Update dropdown options based on filtered variants
     variantSelects.forEach(select => {
       const currentPosition = select.dataset.optionPosition;
       const availableOptions = new Set();
@@ -1200,13 +1211,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
       
-      // Update the select options
+      // Update the select options visibility and availability
       let hasSelectedValue = false;
       Array.from(select.options).forEach(option => {
         if (availableOptions.has(option.value)) {
           option.disabled = false;
           option.style.display = '';
-          // Auto-select first available option if current selection is not available
+          // Auto-select first available option if no current selection
           if (!hasSelectedValue && !selectedValues[currentPosition]) {
             select.value = option.value;
             hasSelectedValue = true;
@@ -1233,9 +1244,11 @@ document.addEventListener('DOMContentLoaded', function() {
       selectedValues[position] = select.value;
     });
     
-    // Find and display matching variant
+    // Find the single matching variant based on ALL selected filters
     const matchingVariant = filteredVariants.find(variant => {
       let matches = true;
+      
+      // Must match all selected dropdown options
       variantSelects.forEach(select => {
         const position = select.dataset.optionPosition;
         const optionKey = `option${position}`;
@@ -1243,21 +1256,17 @@ document.addEventListener('DOMContentLoaded', function() {
           matches = false;
         }
       });
+      
       return matches;
     });
     
-    // Hide all variant rows
-    const allRows = document.querySelectorAll('.dynamic-product-page .table-row[data-variant-id]');
-    allRows.forEach(row => {
-      row.style.display = 'none';
-    });
-    
-    // Show matching variant row if found
+    // Show ONLY the matching variant row (single variant display)
     if (matchingVariant) {
       allRows.forEach(row => {
         const variantId = row.dataset.variantId;
+        // Use loose equality to handle string/number comparison
         if (variantId == matchingVariant.id) {
-          row.style.display = 'grid';
+          row.classList.add('visible');
         }
       });
     }
@@ -1301,6 +1310,11 @@ document.addEventListener('DOMContentLoaded', function() {
       updateMarketInsights(country);
     });
   });
+  
+  // Auto-select first country button if country options exist
+  if (countryOptionPosition && countryButtons.length > 0) {
+    countryButtons[0].click();
+  }
   
   // Tab functionality
   const tabButtons = document.querySelectorAll('.dynamic-product-page .tab-btn');
@@ -1508,3 +1522,4 @@ document.addEventListener('DOMContentLoaded', function() {
   ]
 }
 {% endschema %}
+
