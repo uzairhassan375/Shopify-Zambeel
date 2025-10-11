@@ -101,8 +101,14 @@
         <!-- Main Tabs -->
         <div class="main-tabs">
           <button class="tab-btn active" data-tab="dropshipping">Dropshipping</button>
-          <button class="tab-btn" data-tab="wholesale">Wholesale</button>
-          <button class="tab-btn" data-tab="customisation">Customisation</button>
+          <button class="tab-btn" data-tab="wholesale">
+            Wholesale
+            <span class="coming-soon-badge">Coming Soon</span>
+          </button>
+          <button class="tab-btn" data-tab="customisation">
+            Customisation
+            <span class="coming-soon-badge">Coming Soon</span>
+          </button>
         </div>
 
         <!-- Dropshipping Information -->
@@ -113,18 +119,18 @@
           </div>
           
           <div class="select-country">
-            <span class="country-label">Select Country:</span>
+            <span class="country-label">Country where you want to sell? (Price & SKU Code Varies)</span>
             <div class="country-selection">
               {% assign inventory_location = product.metafields.custom.location | default: "UAE-Warehouse" %}
               {% if inventory_location contains "UAE" or inventory_location contains "uae" %}
-                <button class="country-select-btn" data-country="uae">UAE</button>
+                <button class="variant-box-btn" data-country="uae">UAE</button>
               {% endif %}
               {% if inventory_location contains "KSA" or inventory_location contains "ksa" or inventory_location contains "Saudi" %}
-                <button class="country-select-btn" data-country="ksa">KSA</button>
+                <button class="variant-box-btn" data-country="ksa">KSA</button>
               {% endif %}
               {% unless inventory_location contains "UAE" or inventory_location contains "uae" or inventory_location contains "KSA" or inventory_location contains "ksa" or inventory_location contains "Saudi" %}
-                <button class="country-select-btn" data-country="uae">UAE</button>
-                <button class="country-select-btn" data-country="ksa">KSA</button>
+                <button class="variant-box-btn" data-country="uae">UAE</button>
+                <button class="variant-box-btn" data-country="ksa">KSA</button>
               {% endunless %}
             </div>
           </div>
@@ -135,12 +141,14 @@
               {% assign option_name_lower = option.name | downcase %}
               {% unless option_name_lower contains 'country' or option_name_lower contains 'warehouse' or option_name_lower contains 'location' %}
                 <div class="variant-option-group">
-                  <label class="variant-option-label">Select {{ option.name }}:</label>
-                  <select class="variant-option-select" data-option-position="{{ option.position }}" data-option-name="{{ option.name }}">
+                  <label class="variant-option-label">Variant for {{ option.name }}</label>
+                  <div class="variant-boxes-container" data-option-position="{{ option.position }}" data-option-name="{{ option.name }}">
                     {% for value in option.values %}
-                      <option value="{{ value | escape }}" {% if forloop.first %}selected{% endif %}>{{ value }}</option>
+                      <button class="variant-box-btn" data-option-value="{{ value | escape }}" {% if forloop.first %}data-selected="true"{% endif %}>
+                        {{ value }}
+                      </button>
                     {% endfor %}
-                  </select>
+                  </div>
                 </div>
               {% endunless %}
             {% endfor %}
@@ -614,11 +622,31 @@
   color: #666 !important;
   border-bottom: 2px solid transparent !important;
   transition: all 0.2s ease !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
 }
 
 .dynamic-product-page .tab-btn.active {
   color: #28a745 !important;
   border-bottom-color: #28a745 !important;
+}
+
+.dynamic-product-page .tab-btn:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
+}
+
+.dynamic-product-page .coming-soon-badge {
+  background: #ffc107 !important;
+  color: #000 !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
 }
 
 /* Dropshipping Information */
@@ -647,35 +675,56 @@
 }
 
 .dynamic-product-page .select-country {
-  display: flex !important;
-  align-items: center !important;
-  gap: 15px !important;
+  margin-bottom: 20px !important;
 }
 
 .dynamic-product-page .country-label {
   font-weight: 500 !important;
   color: #333 !important;
+  display: block !important;
+  margin-bottom: 12px !important;
+  font-size: 14px !important;
 }
 
 .dynamic-product-page .country-selection {
   display: flex !important;
-  gap: 10px !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
 }
 
-.dynamic-product-page .country-select-btn {
-  padding: 8px 16px !important;
-  border: 1px solid #ddd !important;
-  background: #f8f9fa !important;
-  border-radius: 6px !important;
+/* Variant Box Buttons */
+.dynamic-product-page .variant-box-btn {
+  padding: 12px 20px !important;
+  border: 2px solid #e3f2fd !important;
+  background: white !important;
+  border-radius: 8px !important;
   cursor: pointer !important;
   font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #142C73 !important;
   transition: all 0.2s ease !important;
+  min-width: 80px !important;
+  text-align: center !important;
+  position: relative !important;
 }
 
-.dynamic-product-page .country-select-btn.active {
-  background: #28a745 !important;
+.dynamic-product-page .variant-box-btn:hover {
+  border-color: #142C73 !important;
+  background: #f5f5f5 !important;
+}
+
+.dynamic-product-page .variant-box-btn.selected {
+  background: #142C73 !important;
   color: white !important;
-  border-color: #28a745 !important;
+  border-color: #142C73 !important;
+  box-shadow: 0 2px 4px rgba(20, 44, 115, 0.2) !important;
+}
+
+.dynamic-product-page .variant-box-btn[data-selected="true"] {
+  background: #142C73 !important;
+  color: white !important;
+  border-color: #142C73 !important;
+  box-shadow: 0 2px 4px rgba(20, 44, 115, 0.2) !important;
 }
 
 /* Variant Selection Section */
@@ -686,41 +735,31 @@
 }
 
 .dynamic-product-page .variant-option-group {
-  margin-bottom: 15px !important;
+  margin-bottom: 20px !important;
 }
 
 .dynamic-product-page .variant-option-label {
   display: block !important;
   font-weight: 500 !important;
   color: #333 !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 12px !important;
   font-size: 14px !important;
 }
 
-.dynamic-product-page .variant-option-select {
-  width: 100% !important;
-  padding: 10px 12px !important;
-  border: 1px solid #ddd !important;
-  border-radius: 6px !important;
+.dynamic-product-page .variant-boxes-container {
+  display: flex !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+}
+
+.dynamic-product-page .variant-box-btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+.dynamic-product-page .variant-box-btn:disabled:hover {
+  border-color: #e3f2fd !important;
   background: white !important;
-  font-size: 14px !important;
-  color: #333 !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-}
-
-.dynamic-product-page .variant-option-select:hover {
-  border-color: #28a745 !important;
-}
-
-.dynamic-product-page .variant-option-select:focus {
-  border-color: #28a745 !important;
-  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1) !important;
-}
-
-.dynamic-product-page .variant-option-select option:disabled {
-  color: #ccc !important;
-  display: none !important;
 }
 
 /* Market Insights Card */
@@ -954,14 +993,16 @@
   }
   
   .dynamic-product-page .country-selection {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 10px !important;
+    gap: 8px !important;
   }
   
   .dynamic-product-page .select-country {
-    flex-direction: column !important;
-    align-items: flex-start !important;
+    margin-bottom: 15px !important;
+  }
+  
+  .dynamic-product-page .country-label {
+    font-size: 13px !important;
+    margin-bottom: 10px !important;
   }
   
   .dynamic-product-page .variant-selection-section {
@@ -970,12 +1011,33 @@
   }
   
   .dynamic-product-page .variant-option-group {
-    margin-bottom: 12px !important;
+    margin-bottom: 15px !important;
   }
   
-  .dynamic-product-page .variant-option-select {
+  .dynamic-product-page .variant-option-label {
+    font-size: 13px !important;
+    margin-bottom: 10px !important;
+  }
+  
+  .dynamic-product-page .variant-boxes-container {
+    gap: 8px !important;
+  }
+  
+  .dynamic-product-page .variant-box-btn {
+    padding: 10px 16px !important;
+    font-size: 13px !important;
+    min-width: 70px !important;
+  }
+  
+  .dynamic-product-page .tab-btn {
+    padding: 10px 16px !important;
     font-size: 14px !important;
-    padding: 8px 10px !important;
+    gap: 6px !important;
+  }
+  
+  .dynamic-product-page .coming-soon-badge {
+    font-size: 10px !important;
+    padding: 2px 6px !important;
   }
 }
 
@@ -1115,8 +1177,8 @@
 document.addEventListener('DOMContentLoaded', function() {
   
   // Variant selection functionality
-  const variantSelects = document.querySelectorAll('.dynamic-product-page .variant-option-select');
   let selectedCountry = null; // No default country
+  let selectedVariants = {}; // Store selected variant values
   
   // Load variant data from JSON
   const variantDataElement = document.getElementById('variant-data');
@@ -1135,22 +1197,48 @@ document.addEventListener('DOMContentLoaded', function() {
     if (countryOptionPosition) return;
   });
   
-  // Store original options for each select
-  const originalOptions = {};
-  variantSelects.forEach(select => {
-    const position = select.dataset.optionPosition;
-    originalOptions[position] = Array.from(select.options).map(opt => opt.value);
-  });
-  
-  // Add event listeners to variant selectors
-  variantSelects.forEach(select => {
-    select.addEventListener('change', function() {
-      filterAndDisplay();
+  // Initialize variant box selection
+  function initializeVariantBoxes() {
+    const variantBoxContainers = document.querySelectorAll('.dynamic-product-page .variant-boxes-container');
+    
+    variantBoxContainers.forEach(container => {
+      const position = container.dataset.optionPosition;
+      const buttons = container.querySelectorAll('.variant-box-btn');
+      
+      buttons.forEach(button => {
+        button.addEventListener('click', function() {
+          // Remove selected state from all buttons in this container
+          buttons.forEach(btn => {
+            btn.classList.remove('selected');
+            btn.removeAttribute('data-selected');
+          });
+          
+          // Add selected state to clicked button
+          this.classList.add('selected');
+          this.setAttribute('data-selected', 'true');
+          
+          // Update selected variant value
+          selectedVariants[position] = this.dataset.optionValue;
+          
+          // Trigger filtering
+          filterAndDisplay();
+        });
+      });
+      
+      // Set initial selection
+      const selectedButton = container.querySelector('[data-selected="true"]');
+      if (selectedButton) {
+        selectedVariants[position] = selectedButton.dataset.optionValue;
+        selectedButton.classList.add('selected');
+      }
     });
-  });
+  }
+  
+  // Initialize on page load
+  initializeVariantBoxes();
   
   // Initial call to set up the display (if no country options, show first variant)
-  if (!countryOptionPosition && variantSelects.length > 0) {
+  if (!countryOptionPosition) {
     filterAndDisplay();
   }
   
@@ -1178,26 +1266,20 @@ document.addEventListener('DOMContentLoaded', function() {
       return true;
     });
     
-    // Get currently selected values from dropdowns
-    let selectedValues = {};
-    variantSelects.forEach(select => {
-      const position = select.dataset.optionPosition;
-      selectedValues[position] = select.value;
-    });
+    // Update variant box availability based on filtered variants
+    const variantBoxContainers = document.querySelectorAll('.dynamic-product-page .variant-boxes-container');
     
-    // Update dropdown options based on filtered variants
-    variantSelects.forEach(select => {
-      const currentPosition = select.dataset.optionPosition;
+    variantBoxContainers.forEach(container => {
+      const currentPosition = container.dataset.optionPosition;
       const availableOptions = new Set();
       
       filteredVariants.forEach(variant => {
         // Check if this variant matches all OTHER selected options
         let matches = true;
-        variantSelects.forEach(otherSelect => {
-          const otherPosition = otherSelect.dataset.optionPosition;
-          if (otherPosition !== currentPosition && selectedValues[otherPosition]) {
+        Object.keys(selectedVariants).forEach(otherPosition => {
+          if (otherPosition !== currentPosition && selectedVariants[otherPosition]) {
             const variantOption = variant[`option${otherPosition}`];
-            if (variantOption !== selectedValues[otherPosition]) {
+            if (variantOption !== selectedVariants[otherPosition]) {
               matches = false;
             }
           }
@@ -1211,48 +1293,52 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
       
-      // Update the select options visibility and availability
-      let hasSelectedValue = false;
-      Array.from(select.options).forEach(option => {
-        if (availableOptions.has(option.value)) {
-          option.disabled = false;
-          option.style.display = '';
-          // Auto-select first available option if no current selection
-          if (!hasSelectedValue && !selectedValues[currentPosition]) {
-            select.value = option.value;
-            hasSelectedValue = true;
-          }
+      // Update button availability
+      const buttons = container.querySelectorAll('.variant-box-btn');
+      buttons.forEach(button => {
+        const optionValue = button.dataset.optionValue;
+        if (availableOptions.has(optionValue)) {
+          button.disabled = false;
         } else {
-          option.disabled = true;
-          option.style.display = 'none';
+          button.disabled = true;
+          // If current selection is not available, clear it
+          if (selectedVariants[currentPosition] === optionValue) {
+            button.classList.remove('selected');
+            button.removeAttribute('data-selected');
+            delete selectedVariants[currentPosition];
+          }
         }
       });
       
-      // If current selection is no longer available, select first available option
-      if (selectedValues[currentPosition] && !availableOptions.has(selectedValues[currentPosition])) {
+      // Auto-select first available option if no current selection
+      if (!selectedVariants[currentPosition]) {
         const firstAvailable = Array.from(availableOptions)[0];
         if (firstAvailable) {
-          select.value = firstAvailable;
+          const firstButton = container.querySelector(`[data-option-value="${firstAvailable}"]`);
+          if (firstButton) {
+            // Remove selected state from all buttons in this container
+            buttons.forEach(btn => {
+              btn.classList.remove('selected');
+              btn.removeAttribute('data-selected');
+            });
+            
+            // Add selected state to first available button
+            firstButton.classList.add('selected');
+            firstButton.setAttribute('data-selected', 'true');
+            selectedVariants[currentPosition] = firstAvailable;
+          }
         }
       }
-    });
-    
-    // Recalculate selected values after auto-selection
-    selectedValues = {};
-    variantSelects.forEach(select => {
-      const position = select.dataset.optionPosition;
-      selectedValues[position] = select.value;
     });
     
     // Find the single matching variant based on ALL selected filters
     const matchingVariant = filteredVariants.find(variant => {
       let matches = true;
       
-      // Must match all selected dropdown options
-      variantSelects.forEach(select => {
-        const position = select.dataset.optionPosition;
+      // Must match all selected variant options
+      Object.keys(selectedVariants).forEach(position => {
         const optionKey = `option${position}`;
-        if (variant[optionKey] !== select.value) {
+        if (variant[optionKey] !== selectedVariants[position]) {
           matches = false;
         }
       });
@@ -1273,7 +1359,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Country selection functionality
-  const countryButtons = document.querySelectorAll('.dynamic-product-page .country-btn, .dynamic-product-page .country-select-btn');
+  const countryButtons = document.querySelectorAll('.dynamic-product-page .variant-box-btn[data-country]');
   const selectedCountrySpan = document.querySelector('.dynamic-product-page .selected-country');
   const selectedCountryWrapper = document.querySelector('.dynamic-product-page .selected-country-wrapper');
   
@@ -1284,11 +1370,15 @@ document.addEventListener('DOMContentLoaded', function() {
   
   countryButtons.forEach(button => {
     button.addEventListener('click', function() {
-      // Remove active class from all buttons
-      countryButtons.forEach(btn => btn.classList.remove('active'));
+      // Remove selected state from all country buttons
+      countryButtons.forEach(btn => {
+        btn.classList.remove('selected');
+        btn.removeAttribute('data-selected');
+      });
       
-      // Add active class to clicked button
-      this.classList.add('active');
+      // Add selected state to clicked button
+      this.classList.add('selected');
+      this.setAttribute('data-selected', 'true');
       
       // Update selected country display
       const country = this.dataset.country || this.textContent.trim();
@@ -1320,7 +1410,18 @@ document.addEventListener('DOMContentLoaded', function() {
   const tabButtons = document.querySelectorAll('.dynamic-product-page .tab-btn');
   
   tabButtons.forEach(button => {
+    // Disable tabs with "Coming Soon" badge
+    if (button.querySelector('.coming-soon-badge')) {
+      button.disabled = true;
+      button.style.cursor = 'not-allowed';
+    }
+    
     button.addEventListener('click', function() {
+      // Don't allow switching to disabled tabs
+      if (this.disabled) {
+        return;
+      }
+      
       // Remove active class from all tabs
       tabButtons.forEach(tab => tab.classList.remove('active'));
       
@@ -1522,4 +1623,5 @@ document.addEventListener('DOMContentLoaded', function() {
   ]
 }
 {% endschema %}
+
 
