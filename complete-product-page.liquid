@@ -165,7 +165,11 @@
                 "available": {{ variant.available }},
                 "option1": "{{ variant.option1 | escape }}",
                 "option2": "{{ variant.option2 | escape }}",
-                "option3": "{{ variant.option3 | escape }}"
+                "option3": "{{ variant.option3 | escape }}",
+                "dispatchTimeUAE": "{{ variant.metafields.custom.dispatch_time_uae | default: product.metafields.custom.dispatching_time | default: '1-2 days Processing' }}",
+                "dispatchTimeKSA": "{{ variant.metafields.custom.dispatch_time_ksa | default: product.metafields.custom.ksa_dispatching_time | default: '2-3 days Processing' }}",
+                "deliveryTimeUAE": "{{ variant.metafields.custom.delivery_time_uae | default: product.metafields.custom.delivery_time | default: '3-5 days Shipping' }}",
+                "deliveryTimeKSA": "{{ variant.metafields.custom.delivery_time_ksa | default: product.metafields.custom.delivery_time | default: '3-5 days Shipping' }}"
               }{% unless forloop.last %},{% endunless %}
               {% endfor %}
             ]
@@ -181,7 +185,14 @@
           
           <div class="insights-grid">
             <div class="insight-item">
-              <span class="insight-icon"></span>
+              <span class="tooltip-icon-corner">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span class="tooltip-text">Indicates how competitive this product is in the market. Low saturation means less competition and better opportunities.</span>
+              </span>
               <div class="insight-content">
                 <span class="insight-label">Market Saturation</span>
                 <span class="insight-value saturation-low">{{ product.metafields.custom.market_saturation | default: "Low" }}</span>
@@ -189,7 +200,14 @@
             </div>
             
             <div class="insight-item">
-              <span class="insight-icon"></span>
+              <span class="tooltip-icon-corner">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span class="tooltip-text">The percentage of orders successfully delivered to customers in this region.</span>
+              </span>
               <div class="insight-content">
                 <span class="insight-label">Expected Delivery Ratio</span>
                 <span class="insight-value delivery-success">{{ product.metafields.custom.delivery_success_rate | default: "88% good" }}</span>
@@ -197,7 +215,14 @@
             </div>
             
             <div class="insight-item">
-              <span class="insight-icon"></span>
+              <span class="tooltip-icon-corner">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span class="tooltip-text">Return on Ad Spend - Expected revenue multiplier for every dollar spent on advertising this product.</span>
+              </span>
               <div class="insight-content">
                 <span class="insight-label">Expected ROAS</span>
                 <span class="insight-value roas">{{ product.metafields.custom.expected_roas | default: "2.2x - 3.8x" }}</span>
@@ -205,9 +230,16 @@
             </div>
             
             <div class="insight-item">
-              <span class="insight-icon"></span>
+              <span class="tooltip-icon-corner">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span class="tooltip-text">Recommended retail price for maximum profit margin while staying competitive in the market.</span>
+              </span>
               <div class="insight-content">
-                <span class="insight-label">Suggested Selling Price</span>
+                <span class="insight-label">Suggested Selling Cost</span>
                 <span class="insight-value suggested-selling-price" 
                       data-suggested-price-uae="{{ product.metafields.custom.suggested_selling_price_uae | default: current_variant.price | plus: 3000 | money }}"
                       data-suggested-price-ksa="{{ product.metafields.custom.suggested_selling_price_ksa | default: current_variant.price | plus: 3500 | money }}">
@@ -232,7 +264,7 @@
               <div class="col-price">Product Cost</div>
               <div class="col-delivery">Delivery Cost</div>
               <div class="col-total">Total Cost<br><span style="font-size: 11px; font-weight: 400;">(Product Cost + Delivery)</span></div>
-              <div class="col-stock">Stock Available Count</div>
+              <div class="col-stock">Available Inventory</div>
               <div class="col-shipping-from">Shipping From</div>
             </div>
             
@@ -298,10 +330,8 @@
               <span class="tile-icon">📦</span>
               <div class="tile-content">
                 <span class="tile-label">Dispatch Time</span>
-                <span class="tile-value dispatch-time" 
-                      data-dispatch-time-uae="{{ product.metafields.custom.dispatching_time | default: '1-2 days Processing' }}"
-                      data-dispatch-time-ksa="{{ product.metafields.custom.ksa_dispatching_time | default: '2-3 days Processing' }}">
-                  {{ product.metafields.custom.dispatching_time | default: "1-2 days Processing" }}
+                <span class="tile-value dispatch-time-variant" id="dispatch-time-display">
+                  {{ current_variant.metafields.custom.dispatch_time_uae | default: product.metafields.custom.dispatching_time | default: "1-2 days Processing" }}
                 </span>
               </div>
             </div>
@@ -310,7 +340,9 @@
               <span class="tile-icon">🚀</span>
               <div class="tile-content">
                 <span class="tile-label">Delivery Time</span>
-                <span class="tile-value delivery-time">{{ product.metafields.custom.delivery_time | default: "3-5 days Shipping" }}</span>
+                <span class="tile-value delivery-time-variant" id="delivery-time-display">
+                  {{ current_variant.metafields.custom.delivery_time_uae | default: product.metafields.custom.delivery_time | default: "3-5 days Shipping" }}
+                </span>
               </div>
             </div>
           </div>
@@ -880,10 +912,12 @@
   justify-content: center !important;
   gap: 5px !important;
   padding: 15px !important;
+  padding-top: 20px !important;
   background: white !important;
   border-radius: 6px !important;
   border: 1px solid #e9ecef !important;
   text-align: center !important;
+  position: relative !important;
 }
 
 .dynamic-product-page .insight-icon {
@@ -903,6 +937,64 @@
   color: #666 !important;
   font-weight: 500 !important;
   text-align: center !important;
+}
+
+/* Tooltip Icon in Top-Right Corner */
+.dynamic-product-page .tooltip-icon-corner {
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  color: #999 !important;
+  transition: color 0.2s ease !important;
+  z-index: 10 !important;
+}
+
+.dynamic-product-page .tooltip-icon-corner svg {
+  display: block !important;
+}
+
+.dynamic-product-page .tooltip-icon-corner.active {
+  color: #333 !important;
+}
+
+.dynamic-product-page .tooltip-text {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 240px !important;
+  background-color: #333 !important;
+  color: #fff !important;
+  text-align: left !important;
+  border-radius: 6px !important;
+  padding: 12px !important;
+  position: absolute !important;
+  z-index: 1000 !important;
+  top: 30px !important;
+  right: 0 !important;
+  font-size: 11px !important;
+  line-height: 1.5 !important;
+  font-weight: 400 !important;
+  transition: opacity 0.3s ease, visibility 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  pointer-events: none !important;
+}
+
+.dynamic-product-page .tooltip-text::before {
+  content: "" !important;
+  position: absolute !important;
+  bottom: 100% !important;
+  right: 8px !important;
+  border-width: 6px !important;
+  border-style: solid !important;
+  border-color: transparent transparent #333 transparent !important;
+}
+
+.dynamic-product-page .tooltip-icon-corner.active .tooltip-text {
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .dynamic-product-page .insight-value {
@@ -1240,7 +1332,8 @@
   color: #333 !important;
 }
 
-.dynamic-product-page .tile-value.dispatch-time {
+.dynamic-product-page .tile-value.dispatch-time,
+.dynamic-product-page .tile-value.dispatch-time-variant {
   background: #cce5ff !important;
   color: #004085 !important;
   padding: 6px 12px !important;
@@ -1248,7 +1341,8 @@
   animation: blink 2s infinite !important;
 }
 
-.dynamic-product-page .tile-value.delivery-time {
+.dynamic-product-page .tile-value.delivery-time,
+.dynamic-product-page .tile-value.delivery-time-variant {
   background: #d4edda !important;
   color: #155724 !important;
   padding: 6px 12px !important;
@@ -1531,6 +1625,26 @@ document.addEventListener('DOMContentLoaded', function() {
           row.classList.add('visible');
         }
       });
+      
+      // Update dispatch and delivery times for the selected variant
+      updateShippingTimes(matchingVariant);
+    }
+  }
+  
+  // Function to update shipping times based on selected variant and country
+  function updateShippingTimes(variant) {
+    const dispatchTimeDisplay = document.getElementById('dispatch-time-display');
+    const deliveryTimeDisplay = document.getElementById('delivery-time-display');
+    
+    if (dispatchTimeDisplay && variant) {
+      const countryKey = selectedCountry ? selectedCountry.toUpperCase() : 'UAE';
+      const dispatchTime = countryKey === 'KSA' ? variant.dispatchTimeKSA : variant.dispatchTimeUAE;
+      const deliveryTime = countryKey === 'KSA' ? variant.deliveryTimeKSA : variant.deliveryTimeUAE;
+      
+      dispatchTimeDisplay.textContent = dispatchTime;
+      if (deliveryTimeDisplay) {
+        deliveryTimeDisplay.textContent = deliveryTime;
+      }
     }
   }
   
@@ -1574,8 +1688,31 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Update market insights based on country
       updateMarketInsights(country);
+      
+      // Find the currently displayed variant and update shipping times
+      const currentVariant = findCurrentVariant();
+      if (currentVariant) {
+        updateShippingTimes(currentVariant);
+      }
     });
   });
+  
+  // Helper function to find the currently selected variant
+  function findCurrentVariant() {
+    return allVariants.find(variant => {
+      let matches = true;
+      
+      // Must match all selected variant options
+      Object.keys(selectedVariants).forEach(position => {
+        const optionKey = `option${position}`;
+        if (variant[optionKey] !== selectedVariants[position]) {
+          matches = false;
+        }
+      });
+      
+      return matches;
+    });
+  }
   
   // Auto-select first country button if country options exist
   if (countryOptionPosition && countryButtons.length > 0) {
@@ -1744,6 +1881,34 @@ document.addEventListener('DOMContentLoaded', function() {
     const formattedAmount = (numAmount / 100).toFixed(2);
     return `${currency} ${formattedAmount}`;
   }
+  
+  // Tooltip functionality - tap only, toggle on/off
+  const tooltipIcons = document.querySelectorAll('.dynamic-product-page .tooltip-icon-corner');
+  
+  tooltipIcons.forEach(icon => {
+    icon.addEventListener('click', function(e) {
+      e.stopPropagation();
+      
+      // Close all other tooltips
+      tooltipIcons.forEach(otherIcon => {
+        if (otherIcon !== this) {
+          otherIcon.classList.remove('active');
+        }
+      });
+      
+      // Toggle current tooltip
+      this.classList.toggle('active');
+    });
+  });
+  
+  // Close tooltip when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.tooltip-icon-corner')) {
+      tooltipIcons.forEach(icon => {
+        icon.classList.remove('active');
+      });
+    }
+  });
 });
 </script>
 
