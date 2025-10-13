@@ -166,10 +166,9 @@
                 "option1": "{{ variant.option1 | escape }}",
                 "option2": "{{ variant.option2 | escape }}",
                 "option3": "{{ variant.option3 | escape }}",
-                "dispatchTimeUAE": "{{ variant.metafields.custom.dispatch_time_uae | default: product.metafields.custom.dispatching_time | default: '1-2 days Processing' }}",
-                "dispatchTimeKSA": "{{ variant.metafields.custom.dispatch_time_ksa | default: product.metafields.custom.ksa_dispatching_time | default: '2-3 days Processing' }}",
-                "deliveryTimeUAE": "{{ variant.metafields.custom.delivery_time_uae | default: product.metafields.custom.delivery_time | default: '3-5 days Shipping' }}",
-                "deliveryTimeKSA": "{{ variant.metafields.custom.delivery_time_ksa | default: product.metafields.custom.delivery_time | default: '3-5 days Shipping' }}"
+                "dispatchTime": "{{ variant.metafields.custom.dispatching_time | default: product.metafields.custom.dispatching_time | default: '1-2 days Processing' }}",
+                "deliveryTime": "{{ variant.metafields.custom.delivery_time | default: product.metafields.custom.delivery_time | default: '3-5 days Shipping' }}",
+                "variantLocation": "{{ variant.metafields.custom.variant_location | default: product.metafields.custom.location | default: 'UAE' }}"
               }{% unless forloop.last %},{% endunless %}
               {% endfor %}
             ]
@@ -253,7 +252,6 @@
         <!-- Selected Variant Information Card -->
         <div class="variants-card">
           <div class="variants-header">
-            <span class="variants-icon">📦</span>
             <h3>Selected Variant Information</h3>
           </div>
           
@@ -307,10 +305,8 @@
                 <span class="stock-count">{{ variant.inventory_quantity | default: "0" }}</span>
               </div>
               <div class="col-shipping-from">
-                <span class="shipping-from" 
-                      data-shipping-uae="{{ product.metafields.custom.location | default: 'UAE' }}"
-                      data-shipping-ksa="{{ product.metafields.custom.location | default: 'KSA' }}">
-                  {{ product.metafields.custom.location | default: "UAE" }}
+                <span class="shipping-from" id="shipping-from-{{ variant.id }}">
+                  {{ variant.metafields.custom.variant_location | default: product.metafields.custom.location | default: "UAE" }}
                 </span>
               </div>
             </div>
@@ -321,27 +317,24 @@
         <!-- Shipping Information Card -->
         <div class="shipping-info-card">
           <div class="shipping-header">
-            <span class="shipping-icon">🚚</span>
             <h3>Shipping Information</h3>
           </div>
           
           <div class="shipping-tiles">
             <div class="shipping-tile">
-              <span class="tile-icon">📦</span>
               <div class="tile-content">
                 <span class="tile-label">Dispatch Time</span>
                 <span class="tile-value dispatch-time-variant" id="dispatch-time-display">
-                  {{ current_variant.metafields.custom.dispatch_time_uae | default: product.metafields.custom.dispatching_time | default: "1-2 days Processing" }}
+                  {{ current_variant.metafields.custom.dispatching_time | default: product.metafields.custom.dispatching_time | default: "1-2 days Processing" }}
                 </span>
               </div>
             </div>
             
             <div class="shipping-tile">
-              <span class="tile-icon">🚀</span>
               <div class="tile-content">
                 <span class="tile-label">Delivery Time</span>
                 <span class="tile-value delivery-time-variant" id="delivery-time-display">
-                  {{ current_variant.metafields.custom.delivery_time_uae | default: product.metafields.custom.delivery_time | default: "3-5 days Shipping" }}
+                  {{ current_variant.metafields.custom.delivery_time | default: product.metafields.custom.delivery_time | default: "3-5 days Shipping" }}
                 </span>
               </div>
             </div>
@@ -900,8 +893,32 @@
 /* Mobile Market Insights */
 @media (max-width: 768px) {
   .dynamic-product-page .insights-grid {
-    grid-template-columns: 1fr !important;
+    display: flex !important;
+    overflow-x: auto !important;
     gap: 10px !important;
+    padding: 10px 0 !important;
+    scroll-behavior: smooth !important;
+    -webkit-overflow-scrolling: touch !important;
+    flex-wrap: nowrap !important;
+  }
+  
+  .dynamic-product-page .insight-item {
+    flex: 0 0 calc(50% - 5px) !important;
+    min-width: calc(50% - 5px) !important;
+  }
+  
+  .dynamic-product-page .insights-grid::-webkit-scrollbar {
+    height: 4px !important;
+  }
+  
+  .dynamic-product-page .insights-grid::-webkit-scrollbar-track {
+    background: #f1f1f1 !important;
+    border-radius: 2px !important;
+  }
+  
+  .dynamic-product-page .insights-grid::-webkit-scrollbar-thumb {
+    background: #c1c1c1 !important;
+    border-radius: 2px !important;
   }
 }
 
@@ -1130,6 +1147,24 @@
     height: 300px !important;
   }
   
+  /* Reduce spacing between product description and tabs on mobile */
+  .dynamic-product-page .product-info-container {
+    padding: 20px 0 0 0 !important;
+  }
+  
+  .dynamic-product-page .product-details-card {
+    margin-bottom: 0 !important;
+    padding-bottom: 10px !important;
+  }
+  
+  .dynamic-product-page .full-width-sections {
+    padding: 10px 0 !important;
+  }
+  
+  .dynamic-product-page .full-width-sections:first-of-type {
+    padding-top: 0 !important;
+  }
+  
   .dynamic-product-page .main-tabs {
     padding: 0 10px !important;
     margin-bottom: 20px !important;
@@ -1159,7 +1194,11 @@
   }
   
   .dynamic-product-page .variant-option-group {
-    margin-bottom: 15px !important;
+    margin-bottom: 5px !important;
+  }
+  
+  .dynamic-product-page .variant-option-group:last-child {
+    margin-bottom: 0 !important;
   }
   
   .dynamic-product-page .variant-option-label {
@@ -1303,33 +1342,33 @@
 .dynamic-product-page .shipping-tile {
   display: flex !important;
   align-items: center !important;
-  gap: 15px !important;
+  justify-content: center !important;
   padding: 20px !important;
   background: white !important;
   border-radius: 8px !important;
   border: 1px solid #e9ecef !important;
 }
 
-.dynamic-product-page .tile-icon {
-  font-size: 32px !important;
-}
-
 .dynamic-product-page .tile-content {
   display: flex !important;
   flex-direction: column !important;
   gap: 8px !important;
+  align-items: center !important;
+  text-align: center !important;
 }
 
 .dynamic-product-page .tile-label {
   font-size: 14px !important;
   color: #666 !important;
   font-weight: 500 !important;
+  text-align: center !important;
 }
 
 .dynamic-product-page .tile-value {
   font-size: 16px !important;
   font-weight: 600 !important;
   color: #333 !important;
+  text-align: center !important;
 }
 
 .dynamic-product-page .tile-value.dispatch-time,
@@ -1359,10 +1398,6 @@
   
   .dynamic-product-page .shipping-tile {
     padding: 15px !important;
-  }
-  
-  .dynamic-product-page .tile-icon {
-    font-size: 28px !important;
   }
   
   /* Variants Table Slider */
@@ -1421,12 +1456,12 @@
     color: #333 !important;
   }
   .dynamic-product-page .col-delivery::before { 
-    content: "Delivery: " !important;
+    content: "Delivery Cost: " !important;
     font-weight: 600 !important;
     color: #333 !important;
   }
   .dynamic-product-page .col-total::before { 
-    content: "Total: " !important;
+    content: "Total Cost: " !important;
     font-weight: 600 !important;
     color: #333 !important;
   }
@@ -1631,19 +1666,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
-  // Function to update shipping times based on selected variant and country
+  // Function to update shipping times based on selected variant
   function updateShippingTimes(variant) {
     const dispatchTimeDisplay = document.getElementById('dispatch-time-display');
     const deliveryTimeDisplay = document.getElementById('delivery-time-display');
     
     if (dispatchTimeDisplay && variant) {
-      const countryKey = selectedCountry ? selectedCountry.toUpperCase() : 'UAE';
-      const dispatchTime = countryKey === 'KSA' ? variant.dispatchTimeKSA : variant.dispatchTimeUAE;
-      const deliveryTime = countryKey === 'KSA' ? variant.deliveryTimeKSA : variant.deliveryTimeUAE;
-      
-      dispatchTimeDisplay.textContent = dispatchTime;
+      dispatchTimeDisplay.textContent = variant.dispatchTime;
       if (deliveryTimeDisplay) {
-        deliveryTimeDisplay.textContent = deliveryTime;
+        deliveryTimeDisplay.textContent = variant.deliveryTime;
       }
     }
   }
@@ -1861,15 +1892,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const currency = row.querySelector('.product-price').getAttribute(`data-currency-${country}`);
         if (newTotal && currency) {
           totalElement.textContent = formatPrice(newTotal, currency);
-        }
-      }
-      
-      // Update Shipping From
-      const shippingFromElement = row.querySelector('.shipping-from');
-      if (shippingFromElement) {
-        const newShippingFrom = shippingFromElement.getAttribute(`data-shipping-${country}`);
-        if (newShippingFrom) {
-          shippingFromElement.textContent = newShippingFrom;
         }
       }
       
