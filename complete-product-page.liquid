@@ -66,7 +66,7 @@
             <h1 class="product-title">{{ product.title | escape }}</h1>
             
             <!-- Tagline -->
-            <p class="product-tagline">{{ product.metafields.custom.product_tagline | default: "Warranty 30 Days Replacement" }}</p>
+            <p class="product-tagline">{{ product.metafields.custom.product_tagline | default: "30 Days Replacement Warrenty" }}</p>
             
 
             <!-- Inventory Location -->
@@ -141,7 +141,7 @@
               {% assign option_name_lower = option.name | downcase %}
               {% unless option_name_lower contains 'country' or option_name_lower contains 'warehouse' or option_name_lower contains 'location' %}
                 <div class="variant-option-group">
-                  <label class="variant-option-label">Variant for {{ option.name }}</label>
+                  <label class="variant-option-label">{{ option.name }}</label>
                   <div class="variant-boxes-container" data-option-position="{{ option.position }}" data-option-name="{{ option.name }}">
                     {% for value in option.values %}
                       <button class="variant-box-btn" data-option-value="{{ value | escape }}" {% if forloop.first %}data-selected="true"{% endif %}>
@@ -190,28 +190,8 @@
             <div class="insight-item">
               <span class="insight-icon"></span>
               <div class="insight-content">
-                <span class="insight-label">Delivery Success</span>
+                <span class="insight-label">Expected Delivery Ratio</span>
                 <span class="insight-value delivery-success">{{ product.metafields.custom.delivery_success_rate | default: "88% good" }}</span>
-              </div>
-            </div>
-            
-            <div class="insight-item">
-              <span class="insight-icon"></span>
-              <div class="insight-content">
-                <span class="insight-label">Dispatch Time</span>
-                <span class="insight-value dispatch-time" 
-                      data-dispatch-time-uae="{{ product.metafields.custom.dispatching_time | default: '1-2 days Processing' }}"
-                      data-dispatch-time-ksa="{{ product.metafields.custom.ksa_dispatching_time | default: '2-3 days Processing' }}">
-                  {{ product.metafields.custom.dispatching_time | default: "1-2 days Processing" }}
-                </span>
-              </div>
-            </div>
-            
-            <div class="insight-item">
-              <span class="insight-icon"></span>
-              <div class="insight-content">
-                <span class="insight-label">Delivery Time</span>
-                <span class="insight-value delivery-time">{{ product.metafields.custom.delivery_time | default: "3-5 days Shipping" }}</span>
               </div>
             </div>
             
@@ -251,7 +231,6 @@
               <div class="col-price">Product Price</div>
               <div class="col-delivery">Delivery (COD)</div>
               <div class="col-total">Total Cost</div>
-              <div class="col-suggested">Suggested Selling Price</div>
             </div>
             
             {% for variant in product.variants %}
@@ -261,9 +240,9 @@
               </div>
               <div class="col-sku">
                 <span class="sku-code" 
-                      data-sku-uae="{{ variant.sku | default: 'SKU-' | append: variant.id }}"
-                      data-sku-ksa="{{ variant.sku | default: 'SKU-' | append: variant.id | append: '-KSA' }}">
-                  {{ variant.sku | default: "SKU-" | append: variant.id }}
+                      data-sku-uae="{{ variant.sku }}"
+                      data-sku-ksa="{{ variant.sku }}">
+                  {{ variant.sku }}
                 </span>
               </div>
               <div class="col-price">
@@ -289,15 +268,38 @@
                   {{ variant.price | plus: 1500 | money }}
                 </span>
               </div>
-              <div class="col-suggested">
-                <span class="suggested-price" 
-                      data-suggested-uae="{{ product.metafields.custom.suggested_selling_price_uae | default: variant.price | plus: 3000 | money }}"
-                      data-suggested-ksa="{{ product.metafields.custom.suggested_selling_price_ksa | default: variant.price | plus: 3500 | money }}">
-                  {{ product.metafields.custom.suggested_selling_price_uae | default: variant.price | plus: 3000 | money }}
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Shipping Information Card -->
+        <div class="shipping-info-card">
+          <div class="shipping-header">
+            <span class="shipping-icon">🚚</span>
+            <h3>Shipping Information</h3>
+          </div>
+          
+          <div class="shipping-tiles">
+            <div class="shipping-tile">
+              <span class="tile-icon">📦</span>
+              <div class="tile-content">
+                <span class="tile-label">Dispatch Time</span>
+                <span class="tile-value dispatch-time" 
+                      data-dispatch-time-uae="{{ product.metafields.custom.dispatching_time | default: '1-2 days Processing' }}"
+                      data-dispatch-time-ksa="{{ product.metafields.custom.ksa_dispatching_time | default: '2-3 days Processing' }}">
+                  {{ product.metafields.custom.dispatching_time | default: "1-2 days Processing" }}
                 </span>
               </div>
             </div>
-            {% endfor %}
+            
+            <div class="shipping-tile">
+              <span class="tile-icon">🚀</span>
+              <div class="tile-content">
+                <span class="tile-label">Delivery Time</span>
+                <span class="tile-value delivery-time">{{ product.metafields.custom.delivery_time | default: "3-5 days Shipping" }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -793,7 +795,7 @@
 
 .dynamic-product-page .insights-grid {
   display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
+  grid-template-columns: repeat(2, 1fr) !important;
   gap: 15px !important;
 }
 
@@ -804,34 +806,11 @@
   }
 }
 
-/* Mobile Market Insights Slider */
+/* Mobile Market Insights */
 @media (max-width: 768px) {
   .dynamic-product-page .insights-grid {
-    display: flex !important;
-    overflow-x: auto !important;
+    grid-template-columns: 1fr !important;
     gap: 10px !important;
-    padding: 10px 0 !important;
-    scroll-behavior: smooth !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-  
-  .dynamic-product-page .insight-item {
-    flex: 0 0 250px !important;
-    min-width: 250px !important;
-  }
-  
-  .dynamic-product-page .insights-grid::-webkit-scrollbar {
-    height: 4px !important;
-  }
-  
-  .dynamic-product-page .insights-grid::-webkit-scrollbar-track {
-    background: #f1f1f1 !important;
-    border-radius: 2px !important;
-  }
-  
-  .dynamic-product-page .insights-grid::-webkit-scrollbar-thumb {
-    background: #c1c1c1 !important;
-    border-radius: 2px !important;
   }
 }
 
@@ -968,7 +947,7 @@
 
 .dynamic-product-page .table-header {
   display: grid !important;
-  grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1.5fr !important;
+  grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr !important;
   background: #f8f9fa !important;
   padding: 15px !important;
   font-weight: 600 !important;
@@ -1058,7 +1037,7 @@
 
 .dynamic-product-page .table-row {
   display: none !important;
-  grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1.5fr !important;
+  grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr !important;
   padding: 15px !important;
   border-bottom: 1px solid #f1f3f4 !important;
   align-items: center !important;
@@ -1114,7 +1093,101 @@
   font-style: italic !important;
 }
 
+/* Shipping Information Card */
+.dynamic-product-page .shipping-info-card {
+  background: #f8f9fa !important;
+  border-radius: 8px !important;
+  padding: 30px !important;
+  margin-top: 30px !important;
+  border: 1px solid #e9ecef !important;
+}
+
+.dynamic-product-page .shipping-header {
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 20px !important;
+}
+
+.dynamic-product-page .shipping-icon {
+  margin-right: 10px !important;
+  font-size: 18px !important;
+}
+
+.dynamic-product-page .shipping-header h3 {
+  margin: 0 !important;
+  font-size: 18px !important;
+  color: #333 !important;
+}
+
+.dynamic-product-page .shipping-tiles {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 20px !important;
+}
+
+.dynamic-product-page .shipping-tile {
+  display: flex !important;
+  align-items: center !important;
+  gap: 15px !important;
+  padding: 20px !important;
+  background: white !important;
+  border-radius: 8px !important;
+  border: 1px solid #e9ecef !important;
+}
+
+.dynamic-product-page .tile-icon {
+  font-size: 32px !important;
+}
+
+.dynamic-product-page .tile-content {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.dynamic-product-page .tile-label {
+  font-size: 14px !important;
+  color: #666 !important;
+  font-weight: 500 !important;
+}
+
+.dynamic-product-page .tile-value {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+}
+
+.dynamic-product-page .tile-value.dispatch-time {
+  background: #cce5ff !important;
+  color: #004085 !important;
+  padding: 6px 12px !important;
+  border-radius: 12px !important;
+  animation: blink 2s infinite !important;
+}
+
+.dynamic-product-page .tile-value.delivery-time {
+  background: #d4edda !important;
+  color: #155724 !important;
+  padding: 6px 12px !important;
+  border-radius: 12px !important;
+  animation: blink 2s infinite !important;
+}
+
 @media (max-width: 768px) {
+  /* Shipping Tiles Mobile */
+  .dynamic-product-page .shipping-tiles {
+    grid-template-columns: 1fr !important;
+    gap: 15px !important;
+  }
+  
+  .dynamic-product-page .shipping-tile {
+    padding: 15px !important;
+  }
+  
+  .dynamic-product-page .tile-icon {
+    font-size: 28px !important;
+  }
+  
   /* Variants Table Slider */
   .dynamic-product-page .variants-table {
     display: flex !important;
@@ -1177,11 +1250,6 @@
   }
   .dynamic-product-page .col-total::before { 
     content: "Total: " !important;
-    font-weight: 600 !important;
-    color: #333 !important;
-  }
-  .dynamic-product-page .col-suggested::before { 
-    content: "Suggested: " !important;
     font-weight: 600 !important;
     color: #333 !important;
   }
@@ -1502,14 +1570,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update market insights based on the selected country
     console.log('Updating market insights for:', country);
     
-    // Update dispatch time based on selected country
-    const dispatchTimeElement = document.querySelector('.dynamic-product-page .dispatch-time');
-    if (dispatchTimeElement) {
+    // Update dispatch time in shipping tiles
+    const dispatchTimeElements = document.querySelectorAll('.dynamic-product-page .dispatch-time');
+    dispatchTimeElements.forEach(dispatchTimeElement => {
       const newDispatchTime = dispatchTimeElement.getAttribute(`data-dispatch-time-${country}`);
       if (newDispatchTime) {
         dispatchTimeElement.textContent = newDispatchTime;
       }
-    }
+    });
     
     // Update suggested selling price in market insights
     const suggestedPriceElement = document.querySelector('.dynamic-product-page .suggested-selling-price');
@@ -1566,14 +1634,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
       
-      // Update Suggested Price
-      const suggestedElement = row.querySelector('.suggested-price');
-      if (suggestedElement) {
-        const newSuggested = suggestedElement.getAttribute(`data-suggested-${country}`);
-        if (newSuggested) {
-          suggestedElement.textContent = newSuggested;
-        }
-      }
     });
   }
   
