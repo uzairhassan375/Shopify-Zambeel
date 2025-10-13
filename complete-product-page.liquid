@@ -3,6 +3,8 @@
   Matches the design from the provided image
 {% endcomment %}
 
+{% render 'daily-inventory1' %}
+
 <section id="MainProduct-{{ section.id }}" data-section="{{ section.id }}" data-product-handle="{{ product.handle }}">
   {%- comment -%} CSS imports removed - all styles are inline {%- endcomment -%}
 
@@ -301,7 +303,7 @@
                 </span>
               </div>
               <div class="col-stock" data-label="Available Inventory">
-                <span class="stock-count">{{ variant.inventory_quantity | default: "0" }}</span>
+                <span class="stock-count" id="stock-count-{{ variant.id }}" data-variant-id="{{ variant.id }}">Loading...</span>
               </div>
             </div>
             {% endfor %}
@@ -1734,6 +1736,95 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
+  // Function to get inventory from daily-inventory1 snippet
+  function getInventoryForVariant(variantId) {
+    console.log('Getting inventory for variant:', variantId);
+    
+    // Read from the JSON data element created by daily-inventory1 snippet
+    const inventoryDataElement = document.getElementById('variant-inventory-data');
+    const capElement = document.getElementById('variant-inventory-cap');
+    
+    if (!inventoryDataElement) {
+      console.log('variant-inventory-data element not found');
+      return 'N/A';
+    }
+    
+    try {
+      const inventoryMap = JSON.parse(inventoryDataElement.textContent || '{}');
+      const capData = capElement ? JSON.parse(capElement.textContent || '{}') : {cap: null};
+      const cap = capData.cap;
+      
+      const inventory = inventoryMap[variantId];
+      
+      if (inventory != null) {
+        // Apply cap if needed (same logic as your script)
+        const displayValue = (cap && inventory > cap) ? (cap + '+') : inventory;
+        return displayValue.toString();
+      }
+      
+      console.log('No inventory found for variant:', variantId, 'in map:', inventoryMap);
+      return 'N/A';
+    } catch (e) {
+      console.error('Error parsing inventory data:', e);
+      return 'N/A';
+    }
+  }
+  
+  // Function to update all inventory displays
+  function updateInventoryDisplays() {
+    const stockElements = document.querySelectorAll('.stock-count[data-variant-id]');
+    
+    stockElements.forEach(element => {
+      const variantId = element.dataset.variantId;
+      const inventory = getInventoryForVariant(variantId);
+      element.textContent = inventory;
+    });
+  }
+  
+  // Debug: Log inventory data from your script
+  function debugInventoryGlobals() {
+    console.log('=== INVENTORY DEBUG INFO ===');
+    const inventoryDataElement = document.getElementById('variant-inventory-data');
+    const capElement = document.getElementById('variant-inventory-cap');
+    
+    if (inventoryDataElement) {
+      console.log('variant-inventory-data element found');
+      try {
+        const inventoryMap = JSON.parse(inventoryDataElement.textContent || '{}');
+        console.log('Inventory map:', inventoryMap);
+      } catch (e) {
+        console.error('Error parsing inventory data:', e);
+      }
+    } else {
+      console.log('variant-inventory-data element NOT found');
+    }
+    
+    if (capElement) {
+      console.log('variant-inventory-cap element found');
+      try {
+        const capData = JSON.parse(capElement.textContent || '{}');
+        console.log('Cap data:', capData);
+      } catch (e) {
+        console.error('Error parsing cap data:', e);
+      }
+    } else {
+      console.log('variant-inventory-cap element NOT found');
+    }
+    console.log('============================');
+  }
+  
+  // Update inventory on page load
+  setTimeout(function() {
+    debugInventoryGlobals();
+    updateInventoryDisplays();
+  }, 500);
+  
+  // Also try after a longer delay to ensure your script has loaded
+  setTimeout(function() {
+    debugInventoryGlobals();
+    updateInventoryDisplays();
+  }, 2000);
+  
   // Country selection functionality
   const countryButtons = document.querySelectorAll('.dynamic-product-page .variant-box-btn[data-country]');
   const selectedCountrySpan = document.querySelector('.dynamic-product-page .selected-country');
@@ -2068,5 +2159,3 @@ document.addEventListener('DOMContentLoaded', function() {
   ]
 }
 {% endschema %}
-
-
