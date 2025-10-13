@@ -263,7 +263,6 @@
               <div class="col-delivery">Delivery Cost</div>
               <div class="col-total">Total Cost<br><span style="font-size: 11px; font-weight: 400;">(Product Cost + Delivery)</span></div>
               <div class="col-stock">Available Inventory</div>
-              <div class="col-shipping-from">Shipping From</div>
             </div>
             
             {% for variant in product.variants %}
@@ -301,13 +300,8 @@
                   {{ variant.price | plus: 1500 | money }}
                 </span>
               </div>
-              <div class="col-stock">
+              <div class="col-stock" data-label="Available Inventory">
                 <span class="stock-count">{{ variant.inventory_quantity | default: "0" }}</span>
-              </div>
-              <div class="col-shipping-from" data-label="Ships from">
-                <span class="shipping-from" id="shipping-from-{{ variant.id }}">
-                  {{ variant.metafields.custom.variant_location | default: product.metafields.custom.location | default: "UAE" }}
-                </span>
               </div>
             </div>
             {% endfor %}
@@ -335,6 +329,15 @@
                 <span class="tile-label">Delivery Time</span>
                 <span class="tile-value delivery-time-variant" id="delivery-time-display">
                   {{ current_variant.metafields.custom.delivery_time | default: product.metafields.custom.delivery_time | default: "3-5 days Shipping" }}
+                </span>
+              </div>
+            </div>
+            
+            <div class="shipping-tile">
+              <div class="tile-content">
+                <span class="tile-label">Ships From</span>
+                <span class="tile-value shipping-from-variant" id="shipping-from-display">
+                  {{ current_variant.metafields.custom.variant_location | default: product.metafields.custom.location | default: "UAE" }}
                 </span>
               </div>
             </div>
@@ -1115,7 +1118,7 @@
 
 .dynamic-product-page .table-header {
   display: grid !important;
-  grid-template-columns: 1.5fr 1.2fr 1fr 1fr 1fr 1fr 1fr !important;
+  grid-template-columns: 1.5fr 1.2fr 1fr 1fr 1fr 1fr !important;
   background: #f8f9fa !important;
   padding: 15px !important;
   font-weight: 600 !important;
@@ -1231,7 +1234,7 @@
 
 .dynamic-product-page .table-row {
   display: none !important;
-  grid-template-columns: 1.5fr 1.2fr 1fr 1fr 1fr 1fr 1fr !important;
+  grid-template-columns: 1.5fr 1.2fr 1fr 1fr 1fr 1fr !important;
   padding: 15px !important;
   border-bottom: 1px solid #f1f3f4 !important;
   align-items: center !important;
@@ -1335,7 +1338,7 @@
 
 .dynamic-product-page .shipping-tiles {
   display: grid !important;
-  grid-template-columns: repeat(2, 1fr) !important;
+  grid-template-columns: repeat(3, 1fr) !important;
   gap: 20px !important;
 }
 
@@ -1465,7 +1468,7 @@
   .dynamic-product-page .table-row .col-price,
   .dynamic-product-page .table-row .col-delivery,
   .dynamic-product-page .table-row .col-total,
-  .dynamic-product-page .table-row .col-shipping-from {
+  .dynamic-product-page .table-row .col-stock {
     background: white !important;
     padding: 8px 12px !important;
     border-radius: 0 !important;
@@ -1476,14 +1479,9 @@
     align-items: center !important;
   }
   
-  .dynamic-product-page .table-row .col-shipping-from {
+  .dynamic-product-page .table-row .col-stock {
     border-bottom: none !important;
     border-radius: 0 0 8px 8px !important;
-  }
-  
-  /* Hide stock column on mobile */
-  .dynamic-product-page .table-row .col-stock {
-    display: none !important;
   }
   
   /* Label styling */
@@ -1491,7 +1489,7 @@
   .dynamic-product-page .table-row .col-price::before,
   .dynamic-product-page .table-row .col-delivery::before,
   .dynamic-product-page .table-row .col-total::before,
-  .dynamic-product-page .table-row .col-shipping-from::before {
+  .dynamic-product-page .table-row .col-stock::before {
     content: attr(data-label) ": " !important;
     font-weight: 500 !important;
     color: #333 !important;
@@ -1502,7 +1500,7 @@
   .dynamic-product-page .table-row .col-sku .sku-code,
   .dynamic-product-page .table-row .col-price .product-price,
   .dynamic-product-page .table-row .col-delivery .delivery-cost,
-  .dynamic-product-page .table-row .col-shipping-from .shipping-from {
+  .dynamic-product-page .table-row .col-stock .stock-count {
     font-weight: 500 !important;
     color: #666 !important;
     font-size: 13px !important;
@@ -1723,11 +1721,15 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateShippingTimes(variant) {
     const dispatchTimeDisplay = document.getElementById('dispatch-time-display');
     const deliveryTimeDisplay = document.getElementById('delivery-time-display');
+    const shippingFromDisplay = document.getElementById('shipping-from-display');
     
     if (dispatchTimeDisplay && variant) {
       dispatchTimeDisplay.textContent = variant.dispatchTime;
       if (deliveryTimeDisplay) {
         deliveryTimeDisplay.textContent = variant.deliveryTime;
+      }
+      if (shippingFromDisplay && variant.variantLocation) {
+        shippingFromDisplay.textContent = variant.variantLocation;
       }
     }
   }
