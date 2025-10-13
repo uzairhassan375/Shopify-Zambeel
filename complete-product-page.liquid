@@ -271,14 +271,14 @@
               <div class="col-variant">
                 <span class="variant-name">{{ variant.title }}</span>
               </div>
-              <div class="col-sku">
+              <div class="col-sku" data-label="SKU">
                 <span class="sku-code" 
                       data-sku-uae="{{ variant.sku }}"
                       data-sku-ksa="{{ variant.sku }}">
                   {{ variant.sku }}
                 </span>
               </div>
-              <div class="col-price">
+              <div class="col-price" data-label="Product Cost">
                 <span class="product-price" 
                       data-price-uae="{{ product.metafields.custom.product_price | default: variant.price }}"
                       data-price-ksa="{{ product.metafields.custom.product_price | default: variant.price }}"
@@ -287,14 +287,14 @@
                   {{ variant.price | money }}
                 </span>
               </div>
-              <div class="col-delivery">
+              <div class="col-delivery" data-label="Delivery Cost">
                 <span class="delivery-cost" 
                       data-delivery-uae="{{ product.metafields.custom.delivery_cost | default: '15 AED' }}"
                       data-delivery-ksa="{{ product.metafields.custom.ksa_delivery_cost | default: '25 SAR' }}">
                   {{ product.metafields.custom.delivery_cost | default: "15 AED" }}
                 </span>
               </div>
-              <div class="col-total">
+              <div class="col-total" data-label="Total Cost">
                 <span class="total-cost" 
                       data-total-uae="{{ variant.price | plus: 1500 }}"
                       data-total-ksa="{{ product.metafields.custom.ksa_total_cost | default: variant.price | plus: 2000 }}">
@@ -304,7 +304,7 @@
               <div class="col-stock">
                 <span class="stock-count">{{ variant.inventory_quantity | default: "0" }}</span>
               </div>
-              <div class="col-shipping-from">
+              <div class="col-shipping-from" data-label="Ships from">
                 <span class="shipping-from" id="shipping-from-{{ variant.id }}">
                   {{ variant.metafields.custom.variant_location | default: product.metafields.custom.location | default: "UAE" }}
                 </span>
@@ -1400,30 +1400,29 @@
     padding: 15px !important;
   }
   
-  /* Variants Table Slider */
+  /* Mobile Variants Card Layout */
   .dynamic-product-page .variants-table {
     display: flex !important;
     overflow-x: auto !important;
-    gap: 15px !important;
-    padding: 10px 0 !important;
+    gap: 10px !important;
+    padding: 5px 0 !important;
     scroll-behavior: smooth !important;
     -webkit-overflow-scrolling: touch !important;
   }
   
   .dynamic-product-page .table-row {
-    flex: 0 0 280px !important;
-    min-width: 280px !important;
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
-    padding: 20px 15px !important;
-    border: 1px solid #e9ecef !important;
-    border-radius: 8px !important;
-    background: white !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    flex: 0 0 calc(100% - 10px) !important;
+    min-width: calc(100% - 10px) !important;
+    display: block !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    margin-bottom: 0 !important;
   }
   
-  .dynamic-product-page .table-row:last-child {
-    border-bottom: 1px solid #e9ecef !important;
+  .dynamic-product-page .table-row.visible {
+    display: block !important;
   }
   
   .dynamic-product-page .variants-table::-webkit-scrollbar {
@@ -1440,38 +1439,85 @@
     border-radius: 2px !important;
   }
   
-  .dynamic-product-page .col-variant::before { 
-    content: "Variant: " !important;
+  /* Product Info Card */
+  .dynamic-product-page .table-row .col-variant {
+    background: #f8f9fa !important;
+    padding: 10px !important;
+    border-radius: 8px 8px 0 0 !important;
+    margin-bottom: 0 !important;
+    border-bottom: 1px solid #e9ecef !important;
+  }
+  
+  .dynamic-product-page .table-row .col-variant::before {
+    content: "" !important;
+  }
+  
+  .dynamic-product-page .table-row .col-variant .variant-name {
+    font-size: 15px !important;
     font-weight: 600 !important;
     color: #333 !important;
+    text-align: center !important;
+    margin: 0 !important;
   }
-  .dynamic-product-page .col-sku::before { 
-    content: "SKU: " !important;
-    font-weight: 600 !important;
+  
+  /* Details Card */
+  .dynamic-product-page .table-row .col-sku,
+  .dynamic-product-page .table-row .col-price,
+  .dynamic-product-page .table-row .col-delivery,
+  .dynamic-product-page .table-row .col-total,
+  .dynamic-product-page .table-row .col-shipping-from {
+    background: white !important;
+    padding: 8px 12px !important;
+    border-radius: 0 !important;
+    margin-bottom: 0 !important;
+    border-bottom: 1px solid #f1f3f4 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+  
+  .dynamic-product-page .table-row .col-shipping-from {
+    border-bottom: none !important;
+    border-radius: 0 0 8px 8px !important;
+  }
+  
+  /* Hide stock column on mobile */
+  .dynamic-product-page .table-row .col-stock {
+    display: none !important;
+  }
+  
+  /* Label styling */
+  .dynamic-product-page .table-row .col-sku::before,
+  .dynamic-product-page .table-row .col-price::before,
+  .dynamic-product-page .table-row .col-delivery::before,
+  .dynamic-product-page .table-row .col-total::before,
+  .dynamic-product-page .table-row .col-shipping-from::before {
+    content: attr(data-label) ": " !important;
+    font-weight: 500 !important;
     color: #333 !important;
+    font-size: 13px !important;
   }
-  .dynamic-product-page .col-price::before { 
-    content: "Product Cost: " !important;
-    font-weight: 600 !important;
-    color: #333 !important;
+  
+  /* Value styling */
+  .dynamic-product-page .table-row .col-sku .sku-code,
+  .dynamic-product-page .table-row .col-price .product-price,
+  .dynamic-product-page .table-row .col-delivery .delivery-cost,
+  .dynamic-product-page .table-row .col-shipping-from .shipping-from {
+    font-weight: 500 !important;
+    color: #666 !important;
+    font-size: 13px !important;
   }
-  .dynamic-product-page .col-delivery::before { 
-    content: "Delivery Cost: " !important;
-    font-weight: 600 !important;
-    color: #333 !important;
+  
+  /* Total cost special styling */
+  .dynamic-product-page .table-row .col-total .total-cost {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #28a745 !important;
   }
-  .dynamic-product-page .col-total::before { 
-    content: "Total Cost: " !important;
-    font-weight: 600 !important;
-    color: #333 !important;
-  }
-  .dynamic-product-page .col-stock::before { 
-    content: "Stock: " !important;
-    font-weight: 600 !important;
-    color: #333 !important;
-  }
-  .dynamic-product-page .col-shipping-from::before { 
-    content: "Shipping From: " !important;
+  
+  .dynamic-product-page .table-row .col-total::before {
+    content: "Total Cost" !important;
+    font-size: 16px !important;
     font-weight: 600 !important;
     color: #333 !important;
   }
@@ -1651,7 +1697,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return matches;
     });
     
-    // Show ONLY the matching variant row (single variant display)
+    // Show matching variant row for desktop, all rows for mobile slider
     if (matchingVariant) {
       allRows.forEach(row => {
         const variantId = row.dataset.variantId;
@@ -1663,6 +1709,13 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Update dispatch and delivery times for the selected variant
       updateShippingTimes(matchingVariant);
+    }
+    
+    // For mobile, show all variant rows in slider
+    if (window.innerWidth <= 768) {
+      allRows.forEach(row => {
+        row.style.display = 'block';
+      });
     }
   }
   
@@ -1931,6 +1984,32 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   });
+  
+  // Handle responsive behavior for variant display
+  function handleVariantDisplay() {
+    const allRows = document.querySelectorAll('.dynamic-product-page .table-row[data-variant-id]');
+    
+    if (window.innerWidth <= 768) {
+      // Mobile: Show all variant cards in slider
+      allRows.forEach(row => {
+        row.style.display = 'block';
+      });
+    } else {
+      // Desktop: Show only selected variant
+      allRows.forEach(row => {
+        row.style.display = 'none';
+        if (row.classList.contains('visible')) {
+          row.style.display = 'grid';
+        }
+      });
+    }
+  }
+  
+  // Initial call
+  handleVariantDisplay();
+  
+  // Listen for window resize
+  window.addEventListener('resize', handleVariantDisplay);
 });
 </script>
 
