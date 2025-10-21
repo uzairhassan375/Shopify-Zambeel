@@ -290,16 +290,16 @@
               </div>
               <div class="col-delivery" data-label="Delivery Cost">
                 <span class="delivery-cost" 
-                      data-delivery-uae="{{ product.metafields.custom.delivery_cost | default: '15 AED' }}"
-                      data-delivery-ksa="{{ product.metafields.custom.ksa_delivery_cost | default: '25 SAR' }}">
-                  {{ product.metafields.custom.delivery_cost | default: "15 AED" }}
+                      data-delivery-uae="{{ product.metafields.custom.delivery_cost | default: '18 AED' }}"
+                      data-delivery-ksa="{{ product.metafields.custom.ksa_delivery_cost | default: '26 SAR' }}">
+                  {{ product.metafields.custom.delivery_cost | default: "18 AED" }}
                 </span>
               </div>
               <div class="col-total" data-label="Total Cost">
                 <span class="total-cost" 
-                      data-total-uae="{{ variant.price | plus: 1500 }}"
-                      data-total-ksa="{{ product.metafields.custom.ksa_total_cost | default: variant.price | plus: 2000 }}">
-                  {{ variant.price | plus: 1500 | money }}
+                      data-total-uae="{{ variant.price | plus: 1800 }}"
+                      data-total-ksa="{{ product.metafields.custom.ksa_total_cost | default: variant.price | plus: 2600 }}">
+                  {{ variant.price | plus: 1800 | money }}
                 </span>
               </div>
               <div class="col-stock" data-label="Available Inventory">
