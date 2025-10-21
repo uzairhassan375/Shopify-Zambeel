@@ -350,7 +350,9 @@
                   </span>
                 </span>
                 <span class="tile-value delivery-time-variant" id="delivery-time-display">
-                  {{ current_variant.metafields.custom.delivery_time | default: product.metafields.custom.delivery_time | default: "3-5 days Shipping" }}
+                  <span class="delivery-time-uae" style="display: none;">1-2 days</span>
+                  <span class="delivery-time-ksa" style="display: none;">1-3 days</span>
+                  <span class="delivery-time-default">{{ current_variant.metafields.custom.delivery_time | default: product.metafields.custom.delivery_time | default: "3-5 days Shipping" }}</span>
                 </span>
               </div>
             </div>
@@ -1624,6 +1626,9 @@ document.addEventListener('DOMContentLoaded', function() {
     filterAndDisplay();
   }
   
+  // Initialize delivery time display
+  updateDeliveryTimeByCountry(selectedCountry);
+  
   function filterAndDisplay() {
     // Hide all variant rows first - ensure only selected variant is shown
     const allRows = document.querySelectorAll('.dynamic-product-page .table-row[data-variant-id]');
@@ -1758,9 +1763,28 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (dispatchTimeDisplay && variant) {
       dispatchTimeDisplay.textContent = variant.dispatchTime;
+      
       if (deliveryTimeDisplay) {
-        deliveryTimeDisplay.textContent = variant.deliveryTime;
+        // Hide all delivery time options first
+        const uaeTime = deliveryTimeDisplay.querySelector('.delivery-time-uae');
+        const ksaTime = deliveryTimeDisplay.querySelector('.delivery-time-ksa');
+        const defaultTime = deliveryTimeDisplay.querySelector('.delivery-time-default');
+        
+        if (uaeTime) uaeTime.style.display = 'none';
+        if (ksaTime) ksaTime.style.display = 'none';
+        if (defaultTime) defaultTime.style.display = 'none';
+        
+        // Show appropriate delivery time based on country
+        const selectedCountry = document.querySelector('.variant-box-btn.selected')?.getAttribute('data-country');
+        if (selectedCountry === 'uae' && uaeTime) {
+          uaeTime.style.display = 'inline';
+        } else if (selectedCountry === 'ksa' && ksaTime) {
+          ksaTime.style.display = 'inline';
+        } else if (defaultTime) {
+          defaultTime.style.display = 'inline';
+        }
       }
+      
       if (shippingFromDisplay && variant.variantLocation) {
         shippingFromDisplay.textContent = variant.variantLocation;
       }
@@ -1898,6 +1922,9 @@ document.addEventListener('DOMContentLoaded', function() {
       // Update market insights based on country
       updateMarketInsights(country);
       
+      // Update delivery time display based on country
+      updateDeliveryTimeByCountry(country);
+      
       // Find the currently displayed variant and update shipping times
       const currentVariant = findCurrentVariant();
       if (currentVariant) {
@@ -1906,6 +1933,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
+  // Function to update delivery time based on country
+  function updateDeliveryTimeByCountry(country) {
+    const deliveryTimeDisplay = document.getElementById('delivery-time-display');
+    if (deliveryTimeDisplay) {
+      // Hide all delivery time options first
+      const uaeTime = deliveryTimeDisplay.querySelector('.delivery-time-uae');
+      const ksaTime = deliveryTimeDisplay.querySelector('.delivery-time-ksa');
+      const defaultTime = deliveryTimeDisplay.querySelector('.delivery-time-default');
+      
+      if (uaeTime) uaeTime.style.display = 'none';
+      if (ksaTime) ksaTime.style.display = 'none';
+      if (defaultTime) defaultTime.style.display = 'none';
+      
+      // Show appropriate delivery time based on country
+      if (country === 'uae' && uaeTime) {
+        uaeTime.style.display = 'inline';
+      } else if (country === 'ksa' && ksaTime) {
+        ksaTime.style.display = 'inline';
+      } else if (defaultTime) {
+        defaultTime.style.display = 'inline';
+      }
+    }
+  }
+
   // Helper function to find the currently selected variant
   function findCurrentVariant() {
     return allVariants.find(variant => {
@@ -2017,6 +2068,28 @@ document.addEventListener('DOMContentLoaded', function() {
         dispatchTimeElement.textContent = newDispatchTime;
       }
     });
+    
+    // Update delivery time in shipping tiles based on country
+    const deliveryTimeDisplay = document.getElementById('delivery-time-display');
+    if (deliveryTimeDisplay) {
+      // Hide all delivery time options first
+      const uaeTime = deliveryTimeDisplay.querySelector('.delivery-time-uae');
+      const ksaTime = deliveryTimeDisplay.querySelector('.delivery-time-ksa');
+      const defaultTime = deliveryTimeDisplay.querySelector('.delivery-time-default');
+      
+      if (uaeTime) uaeTime.style.display = 'none';
+      if (ksaTime) ksaTime.style.display = 'none';
+      if (defaultTime) defaultTime.style.display = 'none';
+      
+      // Show appropriate delivery time based on country
+      if (country === 'uae' && uaeTime) {
+        uaeTime.style.display = 'inline';
+      } else if (country === 'ksa' && ksaTime) {
+        ksaTime.style.display = 'inline';
+      } else if (defaultTime) {
+        defaultTime.style.display = 'inline';
+      }
+    }
     
     // Update suggested selling price in market insights
     const suggestedPriceElement = document.querySelector('.dynamic-product-page .suggested-selling-price');
