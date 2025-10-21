@@ -319,7 +319,17 @@
           <div class="shipping-tiles">
             <div class="shipping-tile">
               <div class="tile-content">
-                <span class="tile-label">Dispatch Time</span>
+                <span class="tile-label">
+                  Dispatch Time
+                  <span class="tooltip-icon-corner">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <span class="tooltip-text">Time to dispatch order from our local warehouse to your customer.</span>
+                  </span>
+                </span>
                 <span class="tile-value dispatch-time-variant" id="dispatch-time-display">
                   {{ current_variant.metafields.custom.dispatching_time | default: product.metafields.custom.dispatching_time | default: "1-2 days Processing" }}
                 </span>
@@ -328,7 +338,17 @@
             
             <div class="shipping-tile">
               <div class="tile-content">
-                <span class="tile-label">Delivery Time</span>
+                <span class="tile-label">
+                  Delivery Time
+                  <span class="tooltip-icon-corner">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <span class="tooltip-text">Time to deliver order to your customer after dispatch.</span>
+                  </span>
+                </span>
                 <span class="tile-value delivery-time-variant" id="delivery-time-display">
                   {{ current_variant.metafields.custom.delivery_time | default: product.metafields.custom.delivery_time | default: "3-5 days Shipping" }}
                 </span>
@@ -337,7 +357,17 @@
             
             <div class="shipping-tile">
               <div class="tile-content">
-                <span class="tile-label">Ships From</span>
+                <span class="tile-label">
+                  Ships From
+                  <span class="tooltip-icon-corner">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <span class="tooltip-text">The location where this specific variant is shipped from, which may vary by product variant.</span>
+                  </span>
+                </span>
                 <span class="tile-value shipping-from-variant" id="shipping-from-display">
                   {{ current_variant.metafields.custom.variant_location | default: product.metafields.custom.location | default: "UAE" }}
                 </span>
@@ -1345,6 +1375,7 @@
 }
 
 .dynamic-product-page .shipping-tile {
+  position: relative !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
