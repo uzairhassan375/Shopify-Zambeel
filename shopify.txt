@@ -1,16 +1,18 @@
-invenory location according to sku
-shipping from 
-premium quality produc removed
-inventory count // added in insights
+
+delivery time according to:
+varient location if uae:1-2 days
+ksa:1-3 days 
 
 
+delivery cost
+uae:18
+ksa:26
 
-after selecting the country 
-available variants and then against that 
+
+variantprice+delivery charges of that country=total
+total*2.2=
+total*2.7=
+10-15
 
 
-market insights
-warrenty 30 days replacement
-delivery time,processing
-
-tooltip(for dispatch time,)
+image ratio

@@ -67,7 +67,7 @@
             <h1 class="product-title">{{ product.title | escape }}</h1>
             
             <!-- Tagline -->
-            <p class="product-tagline">{{ product.metafields.custom.product_tagline | default: "30 Days Replacement Warrenty" }}</p>
+            <p class="product-tagline">{{ product.metafields.custom.product_tagline | default: "30 Days Replacement Warranty" }}</p>
             
 
             <!-- Inventory Location -->
@@ -168,7 +168,7 @@
                 "option3": "{{ variant.option3 | escape }}",
                 "dispatchTime": "{{ variant.metafields.custom.dispatching_time | default: product.metafields.custom.dispatching_time | default: '1-2 days Processing' }}",
                 "deliveryTime": "{{ variant.metafields.custom.delivery_time | default: product.metafields.custom.delivery_time | default: '3-5 days Shipping' }}",
-                "variantLocation": "{{ variant.metafields.custom.variant_location | default: product.metafields.custom.location | default: 'UAE' }}",
+                "variantLocation": "{{ variant.metafields.custom.ships_from | default: product.metafields.custom.ships_from | default: 'UAE' }}",
                 "inventoryMin": {{ variant.metafields.custom.inv_min | default: product.metafields.custom.inv_min | default: 103 | plus: 0 }},
                 "inventoryMax": {{ variant.metafields.custom.inv_max | default: product.metafields.custom.inv_max | default: 596 | plus: 0 }},
                 "inventorySeed": {{ variant.metafields.custom.inv_seed | default: product.metafields.custom.inv_seed | default: 0 | plus: 0 }}
@@ -196,7 +196,7 @@
               </span>
               <div class="insight-content">
                 <span class="insight-label">Market Saturation</span>
-                <span class="insight-value saturation-low">{{ product.metafields.custom.market_saturation | default: "Low" }}</span>
+                <span class="insight-value saturation-low">{{ current_variant.metafields.custom.market_saturation | default: "Low" }}</span>
               </div>
             </div>
             
@@ -211,7 +211,7 @@
               </span>
               <div class="insight-content">
                 <span class="insight-label">Expected Delivery Ratio</span>
-                <span class="insight-value delivery-success">{{ product.metafields.custom.delivery_success_rate | default: "88% good" }}</span>
+                <span class="insight-value delivery-success">{{ current_variant.metafields.custom.expected_delivery_ratio | default: "88%" }}</span>
               </div>
             </div>
             
@@ -226,7 +226,7 @@
               </span>
               <div class="insight-content">
                 <span class="insight-label">Expected ROAS</span>
-                <span class="insight-value roas">{{ product.metafields.custom.expected_roas | default: "2.2x - 3.8x" }}</span>
+                <span class="insight-value roas">{{ current_variant.metafields.custom.expected_roas | default: "2.2x - 3.8x" }}</span>
               </div>
             </div>
             
@@ -369,7 +369,7 @@
                   </span>
                 </span>
                 <span class="tile-value shipping-from-variant" id="shipping-from-display">
-                  {{ current_variant.metafields.custom.variant_location | default: product.metafields.custom.location | default: "UAE" }}
+                  {{ current_variant.metafields.custom.ships_from | default: product.metafields.custom.ships_from | default: "UAE" }}
                 </span>
               </div>
             </div>
@@ -2191,5 +2191,3 @@ document.addEventListener('DOMContentLoaded', function() {
   ]
 }
 {% endschema %}
-
-
