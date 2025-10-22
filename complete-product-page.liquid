@@ -1745,6 +1745,8 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Update dispatch and delivery times for the selected variant
       updateShippingTimes(matchingVariant);
+      // Update suggested selling price range for the selected variant
+      updateSuggestedSellingRange(selectedCountry || null);
     }
     
     // For mobile, show all variant rows in slider
@@ -1880,6 +1882,10 @@ document.addEventListener('DOMContentLoaded', function() {
     debugInventoryGlobals();
     updateInventoryDisplays();
   }, 2000);
+  // Also compute suggested selling price range after initial updates
+  setTimeout(function() {
+    updateSuggestedSellingRange(selectedCountry || null);
+  }, 2100);
   
   // Country selection functionality
   const countryButtons = document.querySelectorAll('.dynamic-product-page .variant-box-btn[data-country]');
@@ -2147,6 +2153,87 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
     });
+
+    // Update suggested selling price range after pricing updates
+    updateSuggestedSellingRange(country);
+  }
+
+  // --- Suggested selling price range calculation ---
+  // Computes low = totalCost * 2.2 and high = totalCost * 2.7 and updates UI
+  function updateSuggestedSellingRange(country) {
+    try {
+      const suggestedEl = document.querySelector('.dynamic-product-page .suggested-selling-price');
+      if (!suggestedEl) return;
+
+      // Find the visible variant row (or the first row if mobile)
+      const visibleRow = document.querySelector('.dynamic-product-page .table-row.visible') || document.querySelector('.dynamic-product-page .table-row[data-variant-id]');
+
+      // Prefer using data-total-{country} attribute if present on the row
+      let totalRaw = null;
+      let currency = null;
+      if (visibleRow) {
+        const totalEl = visibleRow.querySelector('.total-cost');
+        const priceEl = visibleRow.querySelector('.product-price');
+        if (totalEl) {
+          totalRaw = totalEl.getAttribute(`data-total-${country}`) || totalEl.textContent;
+        }
+        if (priceEl) {
+          currency = priceEl.getAttribute(`data-currency-${country}`) || priceEl.getAttribute('data-currency-uae') || priceEl.getAttribute('data-currency-ksa');
+        }
+      }
+
+      // Fallback: try to read from suggestedEl data attribute (which may contain money already)
+      if (!totalRaw) {
+        const fallback = suggestedEl.getAttribute(`data-suggested-price-${country}`) || suggestedEl.getAttribute('data-suggested-price-uae') || suggestedEl.getAttribute('data-suggested-price-ksa');
+        // try to extract a number from fallback
+        if (fallback) {
+          totalRaw = fallback;
+        }
+      }
+
+      // Parse numeric amount from strings like 'AED 123.45' or '12345' (cents)
+      function parseAmount(raw) {
+        if (!raw && raw !== 0) return null;
+        // If looks like an integer in cents (only digits), return cents as number
+        const digitsOnly = String(raw).trim();
+        // If contains currency and decimal (e.g. 'AED 123.45'), extract number
+        const match = digitsOnly.match(/([0-9]+(?:\.[0-9]+)?)/);
+        if (match) {
+          // Determine if original data is in cents by checking length or if attribute looked like an integer without dot
+          const num = parseFloat(match[1]);
+          // If the attribute value appears to be provided in 'cents' (large integer), heuristics: no dot and > 1000
+          if (!match[1].includes('.') && num > 1000) {
+            // treat as cents
+            return num / 100;
+          }
+          return num;
+        }
+        return null;
+      }
+
+      const totalNumber = parseAmount(totalRaw);
+
+      if (totalNumber === null || isNaN(totalNumber)) {
+        // If we couldn't parse a numeric total, don't update range; show fallback text
+        return;
+      }
+
+      const low = totalNumber * 2.2;
+      const high = totalNumber * 2.7;
+
+      // Use currency or guess AED if missing
+      const curr = currency || (country && country.toUpperCase() === 'KSA' ? 'SAR' : 'AED');
+
+      // Format to 2 decimals but if values are big integers show with no decimals for neatness
+      function fmt(val) {
+        // Round to nearest whole number (no decimal points)
+        return `${curr} ${Math.round(val)}`;
+      }
+
+      suggestedEl.textContent = `${fmt(low)} - ${fmt(high)}`;
+    } catch (err) {
+      console.error('Error updating suggested selling range', err);
+    }
   }
   
   function formatPrice(amount, currency) {
