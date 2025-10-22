@@ -490,8 +490,9 @@
 
 .dynamic-product-page .main-product-image {
   width: 100% !important;
-  height: 400px !important;
-  object-fit: cover !important;
+  height: auto !important;              /* preserve natural aspect ratio */
+  object-fit: contain !important;      /* ensure full image is visible */
+  max-height: 800px !important;        /* prevent excessively tall images */
   border-radius: 8px !important;
   background: #f8f9fa !important;
 }
@@ -1181,7 +1182,8 @@
   }
   
   .dynamic-product-page .main-product-image {
-    height: 300px !important;
+    height: auto !important;
+    max-height: 600px !important;
   }
   
   /* Reduce spacing between product description and tabs on mobile */
