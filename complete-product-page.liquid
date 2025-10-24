@@ -629,6 +629,46 @@
   transition: all 0.3s ease !important;
 }
 
+/* Web view: Make description longer and scrollable */
+@media (min-width: 769px) {
+  .dynamic-product-page .product-description {
+    max-height: 490px !important;
+    overflow-y: auto !important;
+    padding-right: 10px !important;
+  }
+  
+  .dynamic-product-page .product-description::-webkit-scrollbar {
+    width: 6px !important;
+  }
+  
+  .dynamic-product-page .product-description::-webkit-scrollbar-track {
+    background: #f1f1f1 !important;
+    border-radius: 3px !important;
+  }
+  
+  .dynamic-product-page .product-description::-webkit-scrollbar-thumb {
+    background: #c1c1c1 !important;
+    border-radius: 3px !important;
+  }
+  
+  .dynamic-product-page .product-description::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8 !important;
+  }
+  
+  /* Hide read more button on web view */
+  .dynamic-product-page .read-more-wrapper {
+    display: none !important;
+  }
+  
+  /* Remove collapsed state on web view */
+  .dynamic-product-page .product-description.collapsed {
+    display: block !important;
+    -webkit-line-clamp: none !important;
+    -webkit-box-orient: initial !important;
+    overflow: visible !important;
+  }
+}
+
 /* Allow all formatting in product description */
 .dynamic-product-page .product-description * {
   margin: revert !important;
@@ -2031,37 +2071,52 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  // Dynamic Read More functionality
+  // Dynamic Read More functionality (only for mobile)
   const productDescription = document.querySelector('.dynamic-product-page .product-description');
   const readMoreWrapper = document.querySelector('.dynamic-product-page .read-more-wrapper');
   const readMoreLink = document.querySelector('.dynamic-product-page .read-more-link');
   const arrow = document.querySelector('.dynamic-product-page .arrow');
   
   if (productDescription && readMoreWrapper && readMoreLink) {
-    // Check if content exceeds 3 lines
-    const lineHeight = parseInt(window.getComputedStyle(productDescription).lineHeight);
-    const maxHeight = lineHeight * 3;
-    
-    if (productDescription.scrollHeight > maxHeight) {
-      // Show read more button and collapse content
-      readMoreWrapper.style.display = 'block';
-      productDescription.classList.add('collapsed');
-      
-      // Add click event listener
-      readMoreLink.addEventListener('click', function(e) {
-        e.preventDefault();
+    // Only apply read more functionality on mobile (screen width <= 768px)
+    function handleReadMore() {
+      if (window.innerWidth <= 768) {
+        // Check if content exceeds 3 lines
+        const lineHeight = parseInt(window.getComputedStyle(productDescription).lineHeight);
+        const maxHeight = lineHeight * 3;
         
-        if (productDescription.classList.contains('collapsed')) {
-          // Expand
-          productDescription.classList.remove('collapsed');
-          readMoreLink.innerHTML = 'Read Less <span class="arrow expanded">↓</span>';
-        } else {
-          // Collapse
+        if (productDescription.scrollHeight > maxHeight) {
+          // Show read more button and collapse content
+          readMoreWrapper.style.display = 'block';
           productDescription.classList.add('collapsed');
-          readMoreLink.innerHTML = 'Read More <span class="arrow">↓</span>';
+          
+          // Add click event listener
+          readMoreLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (productDescription.classList.contains('collapsed')) {
+              // Expand
+              productDescription.classList.remove('collapsed');
+              readMoreLink.innerHTML = 'Read Less <span class="arrow expanded">↓</span>';
+            } else {
+              // Collapse
+              productDescription.classList.add('collapsed');
+              readMoreLink.innerHTML = 'Read More <span class="arrow">↓</span>';
+            }
+          });
         }
-      });
+      } else {
+        // Desktop: Remove any collapsed state and hide read more button
+        productDescription.classList.remove('collapsed');
+        readMoreWrapper.style.display = 'none';
+      }
     }
+    
+    // Initial call
+    handleReadMore();
+    
+    // Handle window resize
+    window.addEventListener('resize', handleReadMore);
   }
   
   function updateMarketInsights(country) {
