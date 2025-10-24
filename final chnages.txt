@@ -1,10 +1,10 @@
-description expand upto images ssection
+description expand upto images ssection                                          //fixed   
 
-dropshipping bold-size big
+dropshipping bold-size big                                                       //fixed
 
-wholesale up and comming soon below
+wholesale up and comming soon below                                              //fixed
 
-selection of dropshipping whole sale etc should be more prominent
+selection of dropshipping whole sale etc should be more prominent                //fixed
 
 spacing after variant less
 market insights text font bigger a bit

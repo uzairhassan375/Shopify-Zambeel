@@ -104,12 +104,12 @@
         <div class="main-tabs">
           <button class="tab-btn active" data-tab="dropshipping">Dropshipping</button>
           <button class="tab-btn" data-tab="wholesale">
-            <span class="coming-soon-badge">Coming Soon</span>
             Wholesale
+            <span class="coming-soon-badge">Coming Soon</span>
           </button>
           <button class="tab-btn" data-tab="customisation">
-            <span class="coming-soon-badge">Coming Soon</span>
             Customisation
+            <span class="coming-soon-badge">Coming Soon</span>
           </button>
         </div>
 
@@ -781,8 +781,8 @@
   border: none !important;
   background: transparent !important;
   cursor: pointer !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
   color: #666 !important;
   border-bottom: 2px solid transparent !important;
   transition: all 0.2s ease !important;
@@ -796,6 +796,76 @@
 .dynamic-product-page .tab-btn.active {
   color: #28a745 !important;
   border-bottom-color: #28a745 !important;
+}
+
+/* Enhanced tab styling for web view */
+@media (min-width: 769px) {
+  .dynamic-product-page .tab-btn {
+    position: relative !important;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 8px 8px 0 0 !important;
+    margin: 0 4px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+  }
+  
+  .dynamic-product-page .tab-btn:hover {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+  }
+  
+  .dynamic-product-page .tab-btn.active {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+    color: white !important;
+    border-color: #28a745 !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3) !important;
+    z-index: 10 !important;
+  }
+  
+  .dynamic-product-page .tab-btn.active::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 3px !important;
+    background: linear-gradient(90deg, #28a745 0%, #20c997 100%) !important;
+    border-radius: 0 0 3px 3px !important;
+  }
+  
+  .dynamic-product-page .tab-btn:disabled {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    color: #6c757d !important;
+    border-color: #dee2e6 !important;
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+  }
+  
+  .dynamic-product-page .tab-btn:disabled:hover {
+    transform: none !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+  }
+  
+  .dynamic-product-page .coming-soon-badge {
+    background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%) !important;
+    color: #000 !important;
+    padding: 2px 8px !important;
+    border-radius: 12px !important;
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
+    margin-top: 4px !important;
+    align-self: center !important;
+    box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3) !important;
+  }
 }
 
 .dynamic-product-page .tab-btn:disabled {
@@ -1251,7 +1321,70 @@
   
   .dynamic-product-page .tab-btn {
     padding: 10px 16px !important;
-    font-size: 14px !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    position: relative !important;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 8px 8px 0 0 !important;
+    margin: 0 2px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+  }
+  
+  .dynamic-product-page .tab-btn:hover {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+  }
+  
+  .dynamic-product-page .tab-btn.active {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+    color: white !important;
+    border-color: #28a745 !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3) !important;
+    z-index: 10 !important;
+  }
+  
+  .dynamic-product-page .tab-btn.active::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 3px !important;
+    background: linear-gradient(90deg, #28a745 0%, #20c997 100%) !important;
+    border-radius: 0 0 3px 3px !important;
+  }
+  
+  .dynamic-product-page .tab-btn:disabled {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    color: #6c757d !important;
+    border-color: #dee2e6 !important;
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+  }
+  
+  .dynamic-product-page .tab-btn:disabled:hover {
+    transform: none !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+  }
+  
+  .dynamic-product-page .coming-soon-badge {
+    background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%) !important;
+    color: #000 !important;
+    padding: 2px 8px !important;
+    border-radius: 12px !important;
+    font-size: 8px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
+    margin-top: 4px !important;
+    align-self: center !important;
+    box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3) !important;
   }
   
   .dynamic-product-page .country-selection {
