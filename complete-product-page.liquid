@@ -290,9 +290,9 @@
               </div>
               <div class="col-delivery" data-label="Delivery Cost">
                 <span class="delivery-cost" 
-                      data-delivery-uae="{{ product.metafields.custom.delivery_cost | default: '18 AED' }}"
-                      data-delivery-ksa="{{ product.metafields.custom.ksa_delivery_cost | default: '26 SAR' }}">
-                  {{ product.metafields.custom.delivery_cost | default: "18 AED" }}
+                      data-delivery-uae="{{ product.metafields.custom.delivery_cost | default: 'AED 18' }}"
+                      data-delivery-ksa="{{ product.metafields.custom.ksa_delivery_cost | default: 'SAR 26' }}">
+                  {{ product.metafields.custom.delivery_cost | default: "AED 18" }}
                 </span>
               </div>
               <div class="col-total" data-label="Total Cost">
@@ -1104,6 +1104,67 @@
   text-align: center !important;
 }
 
+/* Enhanced text sizes for web view - consistent across all tiles */
+@media (min-width: 769px) {
+  /* Market Insights Tiles */
+  .dynamic-product-page .insight-label {
+    font-size: 14px !important;
+  }
+  
+  .dynamic-product-page .insight-value {
+    font-size: 16px !important;
+  }
+  
+  /* Selected Variant Information Tiles */
+  .dynamic-product-page .variant-name {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+  }
+  
+  .dynamic-product-page .sku-code {
+    font-size: 16px !important;
+  }
+  
+  .dynamic-product-page .product-price {
+    font-size: 16px !important;
+  }
+  
+  .dynamic-product-page .delivery-cost {
+    font-size: 16px !important;
+  }
+  
+  .dynamic-product-page .total-cost {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+  }
+  
+  .dynamic-product-page .stock-count {
+    font-size: 16px !important;
+  }
+  
+  /* Shipping Information Tiles */
+  .dynamic-product-page .tile-label {
+    font-size: 16px !important;
+  }
+  
+  .dynamic-product-page .tile-value {
+    font-size: 18px !important;
+  }
+  
+  /* Dropshipping Information Tiles */
+  .dynamic-product-page .country-label {
+    font-size: 16px !important;
+  }
+  
+  .dynamic-product-page .variant-option-label {
+    font-size: 16px !important;
+  }
+  
+  .dynamic-product-page .variant-box-btn {
+    font-size: 16px !important;
+  }
+}
+
 /* Tooltip Icon in Top-Right Corner */
 .dynamic-product-page .tooltip-icon-corner {
   position: absolute !important;
@@ -1265,7 +1326,7 @@
   display: grid !important;
   grid-template-columns: 1.5fr 1.2fr 1fr 1fr 1fr 1fr !important;
   background: #f8f9fa !important;
-  padding: 15px !important;
+  padding: 10px 15px !important;
   font-weight: 600 !important;
   font-size: 14px !important;
   color: #333 !important;
