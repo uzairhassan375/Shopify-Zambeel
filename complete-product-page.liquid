@@ -280,13 +280,26 @@
                 </span>
               </div>
               <div class="col-price" data-label="Product Cost">
-                <span class="product-price" 
-                      data-price-uae="{{ product.metafields.custom.product_price | default: variant.price }}"
-                      data-price-ksa="{{ product.metafields.custom.product_price | default: variant.price }}"
-                      data-currency-uae="AED"
-                      data-currency-ksa="SAR">
-                  {{ variant.price | money }}
-                </span>
+                <div class="price-container">
+                  {% if variant.compare_at_price and variant.compare_at_price > variant.price %}
+                    <div class="compare-at-price">
+                      <span class="compare-price" 
+                            data-compare-uae="{{ variant.compare_at_price }}"
+                            data-compare-ksa="{{ variant.compare_at_price }}"
+                            data-currency-uae="AED"
+                            data-currency-ksa="SAR">
+                        {{ variant.compare_at_price | money }}
+                      </span>
+                    </div>
+                  {% endif %}
+                  <span class="product-price" 
+                        data-price-uae="{{ product.metafields.custom.product_price | default: variant.price }}"
+                        data-price-ksa="{{ product.metafields.custom.product_price | default: variant.price }}"
+                        data-currency-uae="AED"
+                        data-currency-ksa="SAR">
+                    {{ variant.price | money }}
+                  </span>
+                </div>
               </div>
               <div class="col-delivery" data-label="Delivery Cost">
                 <span class="delivery-cost" 
@@ -1545,10 +1558,39 @@
   color: #666 !important;
 }
 
+.dynamic-product-page .price-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 2px !important;
+}
+
+.dynamic-product-page .compare-at-price {
+  margin-bottom: 2px !important;
+}
+
+.dynamic-product-page .compare-price {
+  color: #999 !important;
+  font-size: 12px !important;
+  text-decoration: line-through !important;
+  font-weight: 400 !important;
+}
+
 .dynamic-product-page .product-price {
   color: #28a745 !important;
   font-weight: 500 !important;
   font-size: 14px !important;
+}
+
+/* Enhanced compare price styling for web view */
+@media (min-width: 769px) {
+  .dynamic-product-page .compare-price {
+    font-size: 14px !important;
+  }
+  
+  .dynamic-product-page .product-price {
+    font-size: 16px !important;
+  }
 }
 
 .dynamic-product-page .delivery-cost {
@@ -2381,6 +2423,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const currency = priceElement.getAttribute(`data-currency-${country}`);
         if (newPrice && currency) {
           priceElement.textContent = formatPrice(newPrice, currency);
+        }
+      }
+      
+      // Update Compare At Price
+      const compareElement = row.querySelector('.compare-price');
+      if (compareElement) {
+        const newComparePrice = compareElement.getAttribute(`data-compare-${country}`);
+        const currency = compareElement.getAttribute(`data-currency-${country}`);
+        if (newComparePrice && currency) {
+          compareElement.textContent = formatPrice(newComparePrice, currency);
         }
       }
       
