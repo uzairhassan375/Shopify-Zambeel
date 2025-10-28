@@ -907,11 +907,26 @@
   margin-bottom: 30px !important;
 }
 
-/* Compact dropshipping container for web view */
+/* Compact containers for web view - consistent spacing */
 @media (min-width: 769px) {
   .dynamic-product-page .dropshipping-info {
     padding: 15px 30px !important;
     margin-bottom: 15px !important;
+  }
+  
+  .dynamic-product-page .market-insights-card {
+    padding: 15px 30px !important;
+    margin-bottom: 15px !important;
+  }
+  
+  .dynamic-product-page .variants-card {
+    padding: 15px 30px !important;
+    margin-bottom: 15px !important;
+  }
+  
+  .dynamic-product-page .shipping-info-card {
+    padding: 15px 30px !important;
+    margin-top: 15px !important;
   }
 }
 
@@ -1136,6 +1151,53 @@
     font-size: 16px !important;
   }
   
+  /* All Main Headings - Consistent size */
+  .dynamic-product-page .info-header h3,
+  .dynamic-product-page .insights-header h3,
+  .dynamic-product-page .variants-header h3,
+  .dynamic-product-page .shipping-header h3 {
+    font-size: 20px !important;
+  }
+  
+  /* Selected Variant Information Container - All text increased */
+  .dynamic-product-page .variants-table .table-header {
+    font-size: 16px !important;
+  }
+  
+  .dynamic-product-page .variants-table .table-header > div {
+    font-size: 16px !important;
+  }
+  
+  .dynamic-product-page .table-row .col-variant .variant-name {
+    font-size: 20px !important;
+    font-weight: 600 !important;
+  }
+  
+  .dynamic-product-page .table-row .col-sku .sku-code {
+    font-size: 18px !important;
+  }
+  
+  .dynamic-product-page .table-row .col-price .product-price {
+    font-size: 18px !important;
+  }
+  
+  .dynamic-product-page .table-row .col-price .compare-price {
+    font-size: 16px !important;
+  }
+  
+  .dynamic-product-page .table-row .col-delivery .delivery-cost {
+    font-size: 18px !important;
+  }
+  
+  .dynamic-product-page .table-row .col-total .total-cost {
+    font-size: 20px !important;
+    font-weight: 600 !important;
+  }
+  
+  .dynamic-product-page .table-row .col-stock .stock-count {
+    font-size: 18px !important;
+  }
+  
   /* Selected Variant Information Tiles */
   .dynamic-product-page .variant-name {
     font-size: 18px !important;
@@ -1332,7 +1394,6 @@
 
 .dynamic-product-page .variants-header h3 {
   margin: 0 !important;
-  font-size: 18px !important;
   color: #333 !important;
 }
 
@@ -1652,7 +1713,6 @@
 
 .dynamic-product-page .shipping-header h3 {
   margin: 0 !important;
-  font-size: 18px !important;
   color: #333 !important;
 }
 

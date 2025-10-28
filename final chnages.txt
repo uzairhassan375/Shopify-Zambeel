@@ -1,4 +1,4 @@
-description expand upto images section                                          //fixed   
+description expand upto images section                                           //fixed   
 
 dropshipping bold-size big                                                       //fixed
 
@@ -6,17 +6,17 @@ wholesale up and comming soon below                                             
 
 selection of dropshipping whole sale etc should be more prominent                //fixed
 
-spacing after variant less
-market insights text font bigger a bit
-selected varinat info header box spacing less from top and bottom
-text size also a bit bigger for that section variant information
-delivery cost AED18 rater than 18 AED
+spacing after variant less                                                       //fixed
+market insights text font bigger a bit 						 //fixed
+selected varinat info header box spacing less from top and bottom                //fixed     
+text size also a bit bigger for that section variant information                 //fixed
+delivery cost AED18 rater than 18 AED                                            //fixed
 
 
-compare at price if it exist then show both otherwise just the price
+compare at price if it exist then show both otherwise just the price             //fixed
 
 
-remove the imp informaton section from below
+remove the imp informaton section from below                                     //fixed
 
 
 search bar on top of dropshipping products pag above banner images
