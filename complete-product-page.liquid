@@ -122,17 +122,52 @@
           <div class="select-country">
             <span class="country-label">Country where you want to sell? (Price & SKU Code Varies)</span>
             <div class="country-selection">
-              {% assign inventory_location = product.metafields.custom.location | default: "UAE-Warehouse" %}
-              {% if inventory_location contains "UAE" or inventory_location contains "uae" %}
-                <button class="variant-box-btn" data-country="uae">UAE</button>
-              {% endif %}
-              {% if inventory_location contains "KSA" or inventory_location contains "ksa" or inventory_location contains "Saudi" %}
-                <button class="variant-box-btn" data-country="ksa">KSA</button>
-              {% endif %}
-              {% unless inventory_location contains "UAE" or inventory_location contains "uae" or inventory_location contains "KSA" or inventory_location contains "ksa" or inventory_location contains "Saudi" %}
-                <button class="variant-box-btn" data-country="uae">UAE</button>
-                <button class="variant-box-btn" data-country="ksa">KSA</button>
+              {% assign country_option_found = false %}
+              {% assign target_option = nil %}
+              
+              {% comment %} Check options by name FIRST {% endcomment %}
+              {% for option in product.options_with_values %}
+                {% assign option_name_lower = option.name | downcase %}
+                {% if option_name_lower == 'country' or option_name_lower == 'location' or option_name_lower == 'shipping to' %}
+                  {% assign country_option_found = true %}
+                  {% assign target_option = option %}
+                  {% break %}
+                {% endif %}
+              {% endfor %}
+
+              {% comment %} If (still) not found, check values for country codes like the JS does {% endcomment %}
+              {% unless country_option_found %}
+                {% for option in product.options_with_values %}
+                   {% for value in option.values %}
+                      {% assign val_down = value | downcase %}
+                      {% if val_down contains 'uae' or val_down contains 'ksa' or val_down contains 'saudi' or val_down contains 'pak' %}
+                        {% assign country_option_found = true %}
+                        {% assign target_option = option %}
+                        {% break %}
+                      {% endif %}
+                   {% endfor %}
+                   {% if country_option_found %}{% break %}{% endif %}
+                {% endfor %}
               {% endunless %}
+
+              {% if country_option_found and target_option %}
+                  {% for value in target_option.values %}
+                    <button class="variant-box-btn" data-country="{{ value | downcase }}">{{ value }}</button>
+                  {% endfor %}
+              {% else %}
+                  {% comment %} Fallback if NO suitable option is found {% endcomment %}
+                  {% assign inventory_location = product.metafields.custom.location | default: "UAE-Warehouse" %}
+                  {% if inventory_location contains "UAE" or inventory_location contains "uae" %}
+                    <button class="variant-box-btn" data-country="uae">UAE</button>
+                  {% endif %}
+                  {% if inventory_location contains "KSA" or inventory_location contains "ksa" or inventory_location contains "Saudi" %}
+                    <button class="variant-box-btn" data-country="ksa">KSA</button>
+                  {% endif %}
+                  {% unless inventory_location contains "UAE" or inventory_location contains "uae" or inventory_location contains "KSA" or inventory_location contains "ksa" or inventory_location contains "Saudi" %}
+                    <button class="variant-box-btn" data-country="uae">UAE</button>
+                    <button class="variant-box-btn" data-country="ksa">KSA</button>
+                  {% endunless %}
+              {% endif %}
             </div>
           </div>
 
@@ -275,7 +310,8 @@
               <div class="col-sku" data-label="SKU">
                 <span class="sku-code" 
                       data-sku-uae="{{ variant.sku }}"
-                      data-sku-ksa="{{ variant.sku }}">
+                      data-sku-ksa="{{ variant.sku }}"
+                      data-sku-pak="{{ variant.sku }}">
                   {{ variant.sku }}
                 </span>
               </div>
@@ -286,8 +322,10 @@
                       <span class="compare-price" 
                             data-compare-uae="{{ variant.compare_at_price }}"
                             data-compare-ksa="{{ variant.compare_at_price }}"
+                            data-compare-pak="{{ variant.compare_at_price }}"
                             data-currency-uae="AED"
-                            data-currency-ksa="SAR">
+                            data-currency-ksa="SAR"
+                            data-currency-pak="PKR">
                         {{ variant.compare_at_price | money }}
                       </span>
                     </div>
@@ -295,8 +333,10 @@
                   <span class="product-price" 
                         data-price-uae="{{ product.metafields.custom.product_price | default: variant.price }}"
                         data-price-ksa="{{ product.metafields.custom.product_price | default: variant.price }}"
+                        data-price-pak="{{ product.metafields.custom.product_price | default: variant.price }}"
                         data-currency-uae="AED"
-                        data-currency-ksa="SAR">
+                        data-currency-ksa="SAR"
+                        data-currency-pak="PKR">
                     {{ variant.price | money }}
                   </span>
                 </div>
@@ -304,14 +344,16 @@
               <div class="col-delivery" data-label="Delivery Cost">
                 <span class="delivery-cost" 
                       data-delivery-uae="{{ product.metafields.custom.delivery_cost | default: 'AED 18' }}"
-                      data-delivery-ksa="{{ product.metafields.custom.ksa_delivery_cost | default: 'SAR 26' }}">
+                      data-delivery-ksa="{{ product.metafields.custom.ksa_delivery_cost | default: 'SAR 26' }}"
+                      data-delivery-pak="PKR 200">
                   {{ product.metafields.custom.delivery_cost | default: "AED 18" }}
                 </span>
               </div>
               <div class="col-total" data-label="Total Cost">
                 <span class="total-cost" 
                       data-total-uae="{{ variant.price | plus: 1800 }}"
-                      data-total-ksa="{{ product.metafields.custom.ksa_total_cost | default: variant.price | plus: 2600 }}">
+                      data-total-ksa="{{ product.metafields.custom.ksa_total_cost | default: variant.price | plus: 2600 }}"
+                      data-total-pak="{{ variant.price | plus: 20000 }}">
                   {{ variant.price | plus: 1800 | money }}
                 </span>
               </div>
@@ -363,8 +405,9 @@
                   </span>
                 </span>
                 <span class="tile-value delivery-time-variant" id="delivery-time-display">
-                  <span class="delivery-time-uae" style="display: none;">1-2 days</span>
-                  <span class="delivery-time-ksa" style="display: none;">1-3 days</span>
+                  <span class="delivery-time-uae" style="display: none;">1-2 Days</span>
+                  <span class="delivery-time-ksa" style="display: none;">1-3 Days</span>
+                  <span class="delivery-time-pak" style="display: none;">1-3 Days</span>
                   <span class="delivery-time-default">{{ current_variant.metafields.custom.delivery_time | default: product.metafields.custom.delivery_time | default: "3-5 days Shipping" }}</span>
                 </span>
               </div>
@@ -1919,7 +1962,7 @@ document.addEventListener('DOMContentLoaded', function() {
   allVariants.forEach(variant => {
     for (let i = 1; i <= 3; i++) {
       const optionValue = variant[`option${i}`];
-      if (optionValue && (optionValue.toLowerCase().includes('uae') || optionValue.toLowerCase().includes('ksa') || optionValue.toLowerCase().includes('saudi'))) {
+      if (optionValue && (optionValue.toLowerCase().includes('uae') || optionValue.toLowerCase().includes('ksa') || optionValue.toLowerCase().includes('saudi') || optionValue.toLowerCase().includes('pak'))) {
         countryOptionPosition = i;
         break;
       }
@@ -2081,18 +2124,30 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Show matching variant row for desktop, all rows for mobile slider
     if (matchingVariant) {
+      let visibleRow = null;
       allRows.forEach(row => {
         const variantId = row.dataset.variantId;
         // Use loose equality to handle string/number comparison
         if (variantId == matchingVariant.id) {
           row.classList.add('visible');
+          visibleRow = row;
         }
       });
       
+      // Update pricing based on variant (check if PAK variant)
+      if (visibleRow) {
+        const variantTitle = visibleRow.dataset.variantTitle || '';
+        if (variantTitle.toUpperCase().includes('PAK')) {
+          // Automatically switch to PAK pricing
+          updatePricingAndSKUs('pak');
+        } else {
+          // Use selected country or default
+          updatePricingAndSKUs(selectedCountry || null);
+        }
+      }
+      
       // Update dispatch and delivery times for the selected variant
       updateShippingTimes(matchingVariant);
-      // Update suggested selling price range for the selected variant
-      updateSuggestedSellingRange(selectedCountry || null);
     }
     
     // For mobile, show all variant rows in slider
@@ -2113,21 +2168,30 @@ document.addEventListener('DOMContentLoaded', function() {
       dispatchTimeDisplay.textContent = variant.dispatchTime;
       
       if (deliveryTimeDisplay) {
-        // Hide all delivery time options first
         const uaeTime = deliveryTimeDisplay.querySelector('.delivery-time-uae');
         const ksaTime = deliveryTimeDisplay.querySelector('.delivery-time-ksa');
+        const pakTime = deliveryTimeDisplay.querySelector('.delivery-time-pak');
         const defaultTime = deliveryTimeDisplay.querySelector('.delivery-time-default');
         
         if (uaeTime) uaeTime.style.display = 'none';
         if (ksaTime) ksaTime.style.display = 'none';
+        if (pakTime) pakTime.style.display = 'none';
         if (defaultTime) defaultTime.style.display = 'none';
         
         // Show appropriate delivery time based on country
         const selectedCountry = document.querySelector('.variant-box-btn.selected')?.getAttribute('data-country');
-        if (selectedCountry === 'uae' && uaeTime) {
+        const normalizedCountry = selectedCountry ? 
+          (selectedCountry === 'pakistan' || selectedCountry.includes('pak') ? 'pak' :
+           selectedCountry.includes('saudi') || selectedCountry.includes('ksa') ? 'ksa' :
+           selectedCountry.includes('uae') || selectedCountry.includes('united arab') ? 'uae' : selectedCountry) 
+          : null;
+        
+        if (normalizedCountry === 'uae' && uaeTime) {
           uaeTime.style.display = 'inline';
-        } else if (selectedCountry === 'ksa' && ksaTime) {
+        } else if (normalizedCountry === 'ksa' && ksaTime) {
           ksaTime.style.display = 'inline';
+        } else if (normalizedCountry === 'pak' && pakTime) {
+          pakTime.style.display = 'inline';
         } else if (defaultTime) {
           defaultTime.style.display = 'inline';
         }
@@ -2256,11 +2320,22 @@ document.addEventListener('DOMContentLoaded', function() {
       this.setAttribute('data-selected', 'true');
       
       // Update selected country display
-      const country = this.dataset.country || this.textContent.trim();
-      selectedCountry = country.toLowerCase(); // Update global country variable
+      const countryRaw = this.dataset.country || this.textContent.trim();
+      let country = countryRaw.toLowerCase();
+      
+      // Normalize country code for data attribute lookups
+      if (country === 'pakistan' || country.includes('pak')) {
+        country = 'pak';
+      } else if (country.includes('saudi') || country.includes('ksa')) {
+        country = 'ksa';
+      } else if (country.includes('uae') || country.includes('united arab')) {
+        country = 'uae';
+      }
+      
+      selectedCountry = country; // Update global country variable
       
       if (selectedCountrySpan) {
-        selectedCountrySpan.textContent = country.toUpperCase();
+        selectedCountrySpan.textContent = countryRaw.toUpperCase(); // Display original name
       }
       
       // Show country wrapper once a country is selected
@@ -2292,10 +2367,12 @@ document.addEventListener('DOMContentLoaded', function() {
       // Hide all delivery time options first
       const uaeTime = deliveryTimeDisplay.querySelector('.delivery-time-uae');
       const ksaTime = deliveryTimeDisplay.querySelector('.delivery-time-ksa');
+      const pakTime = deliveryTimeDisplay.querySelector('.delivery-time-pak');
       const defaultTime = deliveryTimeDisplay.querySelector('.delivery-time-default');
       
       if (uaeTime) uaeTime.style.display = 'none';
       if (ksaTime) ksaTime.style.display = 'none';
+      if (pakTime) pakTime.style.display = 'none';
       if (defaultTime) defaultTime.style.display = 'none';
       
       // Show appropriate delivery time based on country
@@ -2303,6 +2380,8 @@ document.addEventListener('DOMContentLoaded', function() {
         uaeTime.style.display = 'inline';
       } else if (country === 'ksa' && ksaTime) {
         ksaTime.style.display = 'inline';
+      } else if (country === 'pak' && pakTime) {
+        pakTime.style.display = 'inline';
       } else if (defaultTime) {
         defaultTime.style.display = 'inline';
       }
@@ -2442,10 +2521,12 @@ document.addEventListener('DOMContentLoaded', function() {
       // Hide all delivery time options first
       const uaeTime = deliveryTimeDisplay.querySelector('.delivery-time-uae');
       const ksaTime = deliveryTimeDisplay.querySelector('.delivery-time-ksa');
+      const pakTime = deliveryTimeDisplay.querySelector('.delivery-time-pak');
       const defaultTime = deliveryTimeDisplay.querySelector('.delivery-time-default');
       
       if (uaeTime) uaeTime.style.display = 'none';
       if (ksaTime) ksaTime.style.display = 'none';
+      if (pakTime) pakTime.style.display = 'none';
       if (defaultTime) defaultTime.style.display = 'none';
       
       // Show appropriate delivery time based on country
@@ -2453,6 +2534,8 @@ document.addEventListener('DOMContentLoaded', function() {
         uaeTime.style.display = 'inline';
       } else if (country === 'ksa' && ksaTime) {
         ksaTime.style.display = 'inline';
+      } else if (country === 'pak' && pakTime) {
+        pakTime.style.display = 'inline';
       } else if (defaultTime) {
         defaultTime.style.display = 'inline';
       }
@@ -2475,10 +2558,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const tableRows = document.querySelectorAll('.dynamic-product-page .table-row[data-variant-id]');
     
     tableRows.forEach(row => {
+      // Check if this variant contains "PAK" in its title - if so, force PAK pricing
+      const variantTitle = row.dataset.variantTitle || '';
+      const isPakVariant = variantTitle.toUpperCase().includes('PAK');
+      const effectiveCountry = isPakVariant ? 'pak' : country;
+      
       // Update SKU
       const skuElement = row.querySelector('.sku-code');
       if (skuElement) {
-        const newSKU = skuElement.getAttribute(`data-sku-${country}`);
+        const newSKU = skuElement.getAttribute(`data-sku-${effectiveCountry}`);
         if (newSKU) {
           skuElement.textContent = newSKU;
         }
@@ -2487,8 +2575,8 @@ document.addEventListener('DOMContentLoaded', function() {
       // Update Product Price
       const priceElement = row.querySelector('.product-price');
       if (priceElement) {
-        const newPrice = priceElement.getAttribute(`data-price-${country}`);
-        const currency = priceElement.getAttribute(`data-currency-${country}`);
+        const newPrice = priceElement.getAttribute(`data-price-${effectiveCountry}`);
+        const currency = priceElement.getAttribute(`data-currency-${effectiveCountry}`);
         if (newPrice && currency) {
           priceElement.textContent = formatPrice(newPrice, currency);
         }
@@ -2497,8 +2585,8 @@ document.addEventListener('DOMContentLoaded', function() {
       // Update Compare At Price
       const compareElement = row.querySelector('.compare-price');
       if (compareElement) {
-        const newComparePrice = compareElement.getAttribute(`data-compare-${country}`);
-        const currency = compareElement.getAttribute(`data-currency-${country}`);
+        const newComparePrice = compareElement.getAttribute(`data-compare-${effectiveCountry}`);
+        const currency = compareElement.getAttribute(`data-currency-${effectiveCountry}`);
         if (newComparePrice && currency) {
           compareElement.textContent = formatPrice(newComparePrice, currency);
         }
@@ -2507,7 +2595,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Update Delivery Cost
       const deliveryElement = row.querySelector('.delivery-cost');
       if (deliveryElement) {
-        const newDelivery = deliveryElement.getAttribute(`data-delivery-${country}`);
+        const newDelivery = deliveryElement.getAttribute(`data-delivery-${effectiveCountry}`);
         if (newDelivery) {
           deliveryElement.textContent = newDelivery;
         }
@@ -2516,8 +2604,8 @@ document.addEventListener('DOMContentLoaded', function() {
       // Update Total Cost
       const totalElement = row.querySelector('.total-cost');
       if (totalElement) {
-        const newTotal = totalElement.getAttribute(`data-total-${country}`);
-        const currency = row.querySelector('.product-price').getAttribute(`data-currency-${country}`);
+        const newTotal = totalElement.getAttribute(`data-total-${effectiveCountry}`);
+        const currency = priceElement ? priceElement.getAttribute(`data-currency-${effectiveCountry}`) : null;
         if (newTotal && currency) {
           totalElement.textContent = formatPrice(newTotal, currency);
         }
@@ -2526,7 +2614,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Update suggested selling price range after pricing updates
-    updateSuggestedSellingRange(country);
+    const visibleRow = document.querySelector('.dynamic-product-page .table-row.visible');
+    if (visibleRow) {
+      const variantTitle = visibleRow.dataset.variantTitle || '';
+      const isPakVariant = variantTitle.toUpperCase().includes('PAK');
+      updateSuggestedSellingRange(isPakVariant ? 'pak' : country);
+    } else {
+      updateSuggestedSellingRange(country);
+    }
   }
 
   // --- Suggested selling price range calculation ---
@@ -2592,8 +2687,21 @@ document.addEventListener('DOMContentLoaded', function() {
       const low = totalNumber * 2.2;
       const high = totalNumber * 2.7;
 
-      // Use currency or guess AED if missing
-      const curr = currency || (country && country.toUpperCase() === 'KSA' ? 'SAR' : 'AED');
+      // Use currency or guess based on country
+      let curr = currency;
+      if (!curr && country) {
+        const countryUpper = country.toUpperCase();
+        if (countryUpper === 'KSA') {
+          curr = 'SAR';
+        } else if (countryUpper === 'PAK') {
+          curr = 'PKR';
+        } else {
+          curr = 'AED';
+        }
+      }
+      if (!curr) {
+        curr = 'AED'; // Default fallback
+      }
 
       // Format to 2 decimals but if values are big integers show with no decimals for neatness
       function fmt(val) {
