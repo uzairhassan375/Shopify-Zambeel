@@ -1840,7 +1840,7 @@
   .dynamic-product-page .table-row {
     flex: 0 0 calc(100% - 10px) !important;
     min-width: calc(100% - 10px) !important;
-    display: block !important;
+    display: none !important;
     padding: 0 !important;
     border: none !important;
     background: transparent !important;
@@ -2010,10 +2010,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initialize on page load
   initializeVariantBoxes();
   
-  // Initial call to set up the display (if no country options, show first variant)
-  if (!countryOptionPosition) {
+  // Initial call to set up the display
+  // Use setTimeout to ensure DOM is ready and variant boxes are initialized
+  setTimeout(function() {
     filterAndDisplay();
-  }
+  }, 100);
   
   // Initialize delivery time display
   updateDeliveryTimeByCountry(selectedCountry);
@@ -2148,14 +2149,16 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Update dispatch and delivery times for the selected variant
       updateShippingTimes(matchingVariant);
-    }
-    
-    // For mobile, show all variant rows in slider
-    if (window.innerWidth <= 768) {
+    } else {
+      // If no matching variant, hide all rows
       allRows.forEach(row => {
-        row.style.display = 'block';
+        row.classList.remove('visible');
+        row.style.display = 'none';
       });
     }
+    
+    // Update display for both mobile and desktop
+    handleVariantDisplay();
   }
   
   // Function to update shipping times based on selected variant
@@ -2754,9 +2757,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const allRows = document.querySelectorAll('.dynamic-product-page .table-row[data-variant-id]');
     
     if (window.innerWidth <= 768) {
-      // Mobile: Show all variant cards in slider
+      // Mobile: Show only the selected variant (same as desktop)
       allRows.forEach(row => {
-        row.style.display = 'block';
+        if (row.classList.contains('visible')) {
+          row.style.display = 'block';
+        } else {
+          row.style.display = 'none';
+        }
       });
     } else {
       // Desktop: Show only selected variant
@@ -2769,11 +2776,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
-  // Initial call
-  handleVariantDisplay();
-  
+  // handleVariantDisplay is called by filterAndDisplay, so no initial call needed
   // Listen for window resize
-  window.addEventListener('resize', handleVariantDisplay);
+  window.addEventListener('resize', function() {
+    // Re-apply display logic on resize
+    handleVariantDisplay();
+  });
 });
 </script>
 
